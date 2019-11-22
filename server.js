@@ -12,7 +12,6 @@ const port       = process.env.PORT || 80;
 app.use(cors());
 app.use('/images', express.static('public'));
 app.use('/',       express.static(path.join(__dirname, 'build')));
-app.use('/static',           express.static(path.join(__dirname, 'build/static')));
 app.use('/static/js',        express.static(path.join(__dirname, 'build/static/js')));
 app.use('/static/css',       express.static(path.join(__dirname, 'build/static/css')));
 app.use('/login',  express.static(path.join(__dirname, 'build')));
@@ -23,10 +22,10 @@ app.use('/img',    express.static(path.join(__dirname, 'revizor-admin/dist/img')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-let db = null;
-let dbase = null;
-let answers = null;
-let clients = null;
+let db        = null;
+let dbase     = null;
+let answers   = null;
+let clients   = null;
 let questions = null;
 
 app.use(async (req, res, next) => {
