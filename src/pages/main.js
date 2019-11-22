@@ -36,8 +36,6 @@ class Main extends Component {
         if(!localStorage.getItem('token')) window.location.assign('/login')
     }
     saveAnswer  = (value, last) => {
-        console.log(value)
-        console.log(last)
         let answers = JSON.parse(localStorage.getItem('answers'));
         if(!answers) answers = []
         answers.push(value) 
@@ -46,7 +44,6 @@ class Main extends Component {
     };
 
     send  = () => {
-        console.log('HEY')
         let answers = JSON.parse(localStorage.getItem('answers'));
         axios.post('/result', {
             questions: this.state.client.question_kit,

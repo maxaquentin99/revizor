@@ -81,9 +81,10 @@ app.get('/ask', async (req, res) => {
 //answers
 app.post('/result', async (req, res) => {
   try {
-    if(req.headers['x-token']){
-      let decoded = await jwt.verify(req.headers['x-token'],'secret');
-      if(req.headers['x-token']){
+    if(req.headers['token']){
+    let token = req.headers.token;
+    let decoded = await jwt.verify(token,'secret');
+      if(req.headers['token']){
         let result = answers.insertOne({
           client: decoded._id,
           answers: req.body.answers,
