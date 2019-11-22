@@ -2,10 +2,11 @@
 
 # dependencies
 /node_modules
+/vue-templates
+/revizor-admin
+/dist
 /.pnp
 .pnp.js
-/src
-/public
 
 # testing
 /coverage
