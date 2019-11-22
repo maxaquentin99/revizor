@@ -6,17 +6,17 @@ const path       = require('path');
 const cors       = require('cors')
 const DB         = require('./data');
 const app        = express();
-const port       = process.env.PORT || 3000;
+const port       = process.env.PORT || 80;
 // var   history    = require('connect-history-api-fallback');
 
 app.use(cors());
 app.use('/images', express.static('public'));
 app.use('/',       express.static(path.join(__dirname, 'build')));
 app.use('/login',  express.static(path.join(__dirname, 'build')));
-app.use('/admin',  express.static(path.join(__dirname, 'vue-templates/dist')))
-app.use('/css',    express.static(path.join(__dirname, 'vue-templates/dist/css')))
-app.use('/js',     express.static(path.join(__dirname, 'vue-templates/dist/js')))
-app.use('/img',    express.static(path.join(__dirname, 'vue-templates/dist/img')))
+app.use('/admin',  express.static(path.join(__dirname, 'revizor-admin/dist')))
+app.use('/css',    express.static(path.join(__dirname, 'revizor-admin/dist/css')))
+app.use('/js',     express.static(path.join(__dirname, 'revizor-admin/dist/js')))
+app.use('/img',    express.static(path.join(__dirname, 'revizor-admin/dist/img')))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
