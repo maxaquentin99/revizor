@@ -108,7 +108,7 @@ app.post('/edit/questions', async (req, res) => {
     if(req.headers['token']){
       let token   = req.headers['token'];
       let decoded = await jwt.verify(token,'secret');
-      
+      if(req.body._id) delete req.body._id;
       let edited  = await questions.updateOne({client_id: decoded._id}, {
         $set: {
           ...req.body
