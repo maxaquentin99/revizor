@@ -109,7 +109,7 @@ app.post('/edit/questions', async (req, res) => {
       let token   = req.headers['token'];
       let decoded = await jwt.verify(token,'secret');
       
-      let edited  = await questions.updateOne({client_id: ObjectId(decoded._id)}, {
+      let edited  = await questions.updateOne({client_id: decoded._id}, {
         $set: {
           ...req.body
         }
