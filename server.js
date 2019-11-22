@@ -11,12 +11,12 @@ const port       = process.env.PORT || 3000;
 
 app.use(cors());
 app.use('/images', express.static('public'));
-app.use('/', express.static(path.join(__dirname, 'build')));
-app.use('/login', express.static(path.join(__dirname, 'build')));
-app.use('/admin', express.static(path.join(__dirname, 'vue-templates/dist')))
-app.use('/css', express.static(path.join(__dirname, 'vue-templates/dist/css')))
-app.use('/js', express.static(path.join(__dirname, 'vue-templates/dist/js')))
-app.use('/img', express.static(path.join(__dirname, 'vue-templates/dist/img')))
+app.use('/',       express.static(path.join(__dirname, 'build')));
+app.use('/login',  express.static(path.join(__dirname, 'build')));
+app.use('/admin',  express.static(path.join(__dirname, 'vue-templates/dist')))
+app.use('/css',    express.static(path.join(__dirname, 'vue-templates/dist/css')))
+app.use('/js',     express.static(path.join(__dirname, 'vue-templates/dist/js')))
+app.use('/img',    express.static(path.join(__dirname, 'vue-templates/dist/img')))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -38,8 +38,6 @@ app.use(async (req, res, next) => {
 //clients
 app.post('/login', async (req, res) => {
   try {
-    let all = await clients.find().toArray();
-    console.log(all)
     let user = await clients.findOne({ 
       username: req.body.username
     });
@@ -63,7 +61,6 @@ app.get('/ask', async (req, res) => {
   try {
     let token = req.headers.token;
     let user = jwt.decode(token, 'secret');
-    user = {_id: '5dd42ea71c9d440000b00254'}
     let result        = await clients.findOne({_id: ObjectId(user._id)});
     let qs     = await questions.findOne({client_id: user._id});
     result.question_kit = qs;
@@ -86,20 +83,20 @@ app.post('/result', async (req, res) => {
   try {
     if(req.headers['x-token']){
       let decoded = await jwt.verify(req.headers['x-token'],'secret');
-    if(req.headers['x-token']){
-      let result = answers.insertOne({
-        client: decoded._id,
-        questionone: req.body.questionone, 
-        questiontwo: req.body.questiontwo, 
-        questionthree: req.body.questionthree,
-        comment: req.body.comment,
-        time: Date(),
-      });
-      res.send(result);
-    }
-    } else{ 
+      if(req.headers['x-token']){
+        let result = answers.insertOne({
+          client: decoded._id,
+          answers: req.body.answers,
+          question_kit: req.body.question_kit,
+          time: Date()
+        });
+        res.send(result);
+      }
+    } else { 
+      res.status(403).send('No permission')
       }
     } catch(err){
+      res.status(500).send('Damn man, smth goes wrong') 
       throw err;
   }
 });

@@ -5,6 +5,7 @@
 /vue-templates
 /revizor-admin
 /dist
+/build
 /.pnp
 .pnp.js
 
