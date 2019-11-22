@@ -12,7 +12,7 @@ const port       = process.env.PORT || 80;
 app.use(cors());
 app.use('/images', express.static('public'));
 app.use('/',       express.static(path.join(__dirname, 'build')));
-app.use('/static', express.static('build/static'));
+app.use('/static', express.static(path.join('build/static')));
 app.use('/login',  express.static(path.join(__dirname, 'build')));
 app.use('/admin',  express.static(path.join(__dirname, 'revizor-admin/dist')))
 app.use('/css',    express.static(path.join(__dirname, 'revizor-admin/dist/css')))
