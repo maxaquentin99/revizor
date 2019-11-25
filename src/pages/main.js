@@ -24,7 +24,7 @@ class Main extends Component {
     getask  = async () => {
         try {
             let token    = localStorage.getItem('token');
-            let response = await axios.get('/ask', {headers:{ token: token}})
+            let response = await axios.get('http://localhost:80/ask', {headers:{ token: token}})
             console.log(response)
             this.setState({ client: response.data })
         } catch (err) {
@@ -71,14 +71,23 @@ class Main extends Component {
         return (
             <div className="main">
                 <div style={{height: '800px', display: 'block'}}>
+                <div className="finallogo" >
+                        {client.logo}
+                        </div>
                     <div className="start">
                         Не проходите мимо, оставьте свой отзыв!
                     </div>
+                    <span>
+                    <img src={'love.svg'} className="love" alt="" />
+                    </span>
+                    <span>
                     <a href="#question0"> 
-                        <button className="startok">
-                            НАЧАТЬ
-                        </button>
+                        <img src={'startbutton.png'} className="startbutton" alt="" />
                     </a>
+                    </span>
+                    <span>
+                    <img src={'review.svg'} className="love" alt="" />
+                    </span>
                 </div>
                 {
                     questions.map((q, index) => {
@@ -165,16 +174,20 @@ class Main extends Component {
                     </a>
                 </div> */}
 
-                    <div style={{height: '800px', display: 'block'}}>
-                        <div className="question" id="finish">
-                            FeedBack
+                    <div style={{height: '800px', display: 'block'}} id="finish">
+                        <div className="finallogo" >
+                        {client.logo}
                         </div>
-                        <hr className="hr"></hr>
                         <div className="thanks">
-                            Спасибо за оставленный отзыв!
+                            Спасибо за 
+                            <br></br>
+                            оставленный отзыв!
                         </div>
+                    <img className="message" src={'message.svg'} alt=""/>
+                    <br></br>
+                    <img className="logo" src={'revizor.png'} alt=""/>
                     </div>
-                    <div className="logo">{client.logo}</div>
+
                 </div>
 
             )
