@@ -14,6 +14,7 @@ class Main extends Component {
                     questions: []
                 }
             },
+            url: 'http://46.101.234.112'
         }
     }
 
@@ -24,8 +25,9 @@ class Main extends Component {
     getask  = async () => {
         try {
             let token    = localStorage.getItem('token');
-            let response = await axios.get('http://localhost:80/ask', {headers:{ token: token}})
+            let response = await axios.get(this.state.url+'/ask', {headers:{ token: token}})
             console.log(response)
+            localStorage.setItem('bg-color',response.data.question_kit.color)
             this.setState({ client: response.data })
         } catch (err) {
             throw err
@@ -45,7 +47,7 @@ class Main extends Component {
 
     send  = () => {
         let answers = JSON.parse(localStorage.getItem('answers'));
-        axios.post('/result', {
+        axios.post(this.state.url+'/result', {
             questions: this.state.client.question_kit,
             answers: answers
         }, {
@@ -70,7 +72,7 @@ class Main extends Component {
         const questions = this.state.client.question_kit.questions;
         return (
             <div className="main">
-                <div style={{height: '800px', display: 'block'}}>
+                <div style={{height: '800px', display: 'block', backgroundColor: localStorage.getItem('bg-color')}}>
                 <div className="finallogo" >
                         {client.logo}
                         </div>
@@ -174,7 +176,7 @@ class Main extends Component {
                     </a>
                 </div> */}
 
-                    <div style={{height: '800px', display: 'block'}} id="finish">
+                    <div style={{height: '800px', display: 'block', backgroundColor: localStorage.getItem('bg-color')}} id="finish">
                         <div className="finallogo" >
                         {client.logo}
                         </div>
