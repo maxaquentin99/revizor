@@ -1,8 +1,5 @@
 //for development
 
-
-
-
 "start-js": "react-scripts start",
 "backend-start": "nodemon --exec node server.js",
 "start": "concurrently \"npm-run-all -p backend-start start-js\"",

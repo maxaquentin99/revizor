@@ -77,19 +77,15 @@ class Main extends Component {
                         {client.logo}
                         </div>
                     <div className="start">
-                        Не проходите мимо, оставьте свой отзыв!
+                        Не проходите мимо,
+                        <br></br>
+                         оставьте свой отзыв!
                     </div>
-                    <span>
-                    <img src={'love.svg'} className="love" alt="" />
-                    </span>
-                    <span>
                     <a href="#question0"> 
-                        <img src={'startbutton.png'} className="startbutton" alt="" />
+                        <img src={'startbutton.svg'} className="startbutton" alt="" />
                     </a>
-                    </span>
-                    <span>
-                    <img src={'review.svg'} className="love" alt="" />
-                    </span>
+                    <br></br>
+                    <img className="logo" src={'revizor.svg'} alt=""/>
                 </div>
                 {
                     questions.map((q, index) => {
@@ -185,9 +181,8 @@ class Main extends Component {
                             <br></br>
                             оставленный отзыв!
                         </div>
-                    <img className="message" src={'message.svg'} alt=""/>
                     <br></br>
-                    <img className="logo" src={'revizor.png'} alt=""/>
+                    <img className="logo" src={'revizor.svg'} alt=""/>
                     </div>
 
                 </div>
