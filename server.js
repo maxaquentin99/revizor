@@ -108,6 +108,8 @@ app.post('/result', async (req, res) => {
     })
     recievers.forEach(element => {
       bot.sendMessage(element.chat_id, text);
+      console.log(element.chat_id)
+      console.log(text)
     }); 
     res.send(result);
       }
