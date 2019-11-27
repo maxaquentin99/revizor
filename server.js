@@ -101,9 +101,10 @@ app.post('/result', async (req, res) => {
       question_kit: req.body.question_kit,
       time: Date()
     });
-    let text = ''
-    req.body.question_kit.questions.map((item, index) => {
-      text = text +' \n '+ req.body.answers[index];
+    let text = '';
+    req.body.answers.map((item) => {
+      text = text +' \n '+ item;
+      return 0;
     })
     recievers.forEach(element => {
       bot.sendMessage(element.chat_id, text);
