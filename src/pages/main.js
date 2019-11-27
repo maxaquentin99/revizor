@@ -41,7 +41,7 @@ class Main extends Component {
         let answers = JSON.parse(localStorage.getItem('answers'));
         if(!answers) answers = []
         answers.push(value) 
-        localStorage.setItem('asnwers', this.state.comment);
+        localStorage.setItem('asnwers', answers);
         if(last) this.send()
     };
 
