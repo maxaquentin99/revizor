@@ -4,6 +4,13 @@ const jwt        = require('jsonwebtoken');
 const ObjectId   = require('mongodb').ObjectID;
 const path       = require('path');
 const cors       = require('cors')
+const Telegram   = require('telegraf/telegram')
+const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
+let bot_options  = {
+  agent: null,        
+  webhookReply: true 
+}
+let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
 const app        = express();
 const port       = process.env.PORT || 80;
@@ -25,6 +32,7 @@ let db        = null;
 let dbase     = null;
 let answers   = null;
 let clients   = null;
+let bot_users = null;
 let questions = null;
 
 app.use(async (req, res, next) => {
@@ -32,6 +40,7 @@ app.use(async (req, res, next) => {
   dbase      =  await db.db('revizor');
   answers    = dbase.collection('answers');
   clients    = dbase.collection('clients');
+  bot_users  = dbase.collection('bot-users');
   questions  = dbase.collection('questions');
   next();
 })
@@ -63,7 +72,7 @@ app.get('/ask', async (req, res) => {
     let token = req.headers.token;
     let user = jwt.decode(token, 'secret');
     let result        = await clients.findOne({_id: ObjectId(user._id)});
-    let qs     = await questions.findOne({client_id: user._id});
+    let qs            = await questions.findOne({client_id: user._id});
     result.question_kit = qs;
     if(!result.question_kit){ 
       result.question_kit = {
@@ -83,23 +92,42 @@ app.get('/ask', async (req, res) => {
 app.post('/result', async (req, res) => {
   try {
     if(req.headers['token']){
-    let token = req.headers.token;
-    let decoded = await jwt.verify(token,'secret');
-      if(req.headers['token']){
-        let result = answers.insertOne({
-          client: decoded._id,
-          answers: req.body.answers,
-          question_kit: req.body.question_kit,
-          time: Date()
-        });
-        res.send(result);
+    let token     = req.headers.token;
+
+    let decoded   = await jwt.verify(token,'secret');
+    let client    = await clients.findOne({_id: ObjectId(decoded._id)})
+    let recievers = await bot_users.find({client_id: client._id}).toArray();
+    console.log(recievers);
+
+    let result    = await answers.insertOne({
+      client: decoded._id,
+      answers: req.body.answers,
+      question_kit: req.body.question_kit,
+      time: Date()
+    });
+    let text = '';
+
+    console.log(req.body.answers);
+    for(let i=0;i<req.body.answers.length;i++){
+      text = text +' \n '+ req.body.answers[i];
+    }
+    for(let i=0;i<recievers.length;i++){
+      console.log(recievers[i].chat_id)
+      bot.sendMessage(recievers[i].chat_id, text)
+    }
+    // recievers.forEach(element => {
+    //   bot.sendMessage(element.chat_id, text);
+    //   console.log(element.chat_id)
+    //   console.log(text)
+    // }); 
+    res.send(result);
       }
-    } else { 
+    else { 
       res.status(403).send('No permission')
       }
-    } catch(err){
-      res.status(500).send('Damn man, smth goes wrong') 
-      throw err;
+  } catch(err){
+    res.status(500).send('Damn man, smth goes wrong') 
+    throw err;
   }
 });
 
