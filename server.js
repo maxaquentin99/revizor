@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
 app.get('/ask', async (req, res) => {
   try {
     let token = req.headers.token;
-    let user = jwt.decode(token, 'secret');
+    let user  = jwt.decode(token, 'secret');
     let result        = await clients.findOne({_id: ObjectId(user._id)});
     let qs            = await questions.findOne({client_id: user._id});
     result.question_kit = qs;
@@ -97,7 +97,7 @@ app.post('/result', async (req, res) => {
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
     let recievers = await bot_users.find({client_id: client._id}).toArray();
-    console.log(recievers);
+    // console.log(recievers);
 
     let result    = await answers.insertOne({
       client: decoded._id,
@@ -106,20 +106,13 @@ app.post('/result', async (req, res) => {
       time: Date()
     });
     let text = '';
-
-    console.log(req.body.answers);
+    console.log(req.body)
     for(let i=0;i<req.body.answers.length;i++){
-      text = text +' \n '+ req.body.answers[i];
+      text = text +'\n'+req.body.questions.questions[i].bot_text+' - '+ req.body.answers[i];
     }
     for(let i=0;i<recievers.length;i++){
-      console.log(recievers[i].chat_id)
       bot.sendMessage(recievers[i].chat_id, text)
     }
-    // recievers.forEach(element => {
-    //   bot.sendMessage(element.chat_id, text);
-    //   console.log(element.chat_id)
-    //   console.log(text)
-    // }); 
     res.send(result);
       }
     else { 

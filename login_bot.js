@@ -61,6 +61,9 @@ password.enter(ctx => {
 
 password.on('message', async (ctx) => {
     try {
+        if(!ctx.session.state) {
+            ctx.flow.enter('login');
+        }
         let user = ctx.session.state.user;
         let msg  = ctx.message.text;
         if(user.password === msg) {
@@ -72,6 +75,7 @@ password.on('message', async (ctx) => {
                 }
             }, {upsert: true})
             ctx.reply('Супер! Вы теперь будете получать отзывы своих клиентов тут! ')
+            ctx.flow.leave('password')
             console.log(inserted)
         } else {
             ctx.reply('Пароль неверный');
@@ -82,9 +86,7 @@ password.on('message', async (ctx) => {
 });
 
 bot.start(async ctx => {
-    // ctx.session.state = { user: {}}
-    // let us = await bot_users.find().toArray();
-    // ctx.reply(us);
+    ctx.reply('HEY')
     await ctx.reply('Hi! Пожалуйста, введите логин и пароль чтобы войти в свой аккаунт');
     ctx.flow.enter('login');
 })

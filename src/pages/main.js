@@ -14,7 +14,8 @@ class Main extends Component {
                     questions: []
                 }
             },
-            url: 'http://46.101.234.112'
+            url: 'http://localhost',
+            // url: 'http://46.101.234.112'
         }
     }
 
