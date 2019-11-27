@@ -82,7 +82,9 @@ password.on('message', async (ctx) => {
 });
 
 bot.start(async ctx => {
-    ctx.session.state = { user: {}}
+    // ctx.session.state = { user: {}}
+    // let us = await bot_users.find().toArray();
+    // ctx.reply(us);
     await ctx.reply('Hi! Пожалуйста, введите логин и пароль чтобы войти в свой аккаунт');
     ctx.flow.enter('login');
 })

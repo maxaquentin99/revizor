@@ -94,6 +94,7 @@ app.post('/result', async (req, res) => {
     if(req.headers['token']){
     let token     = req.headers.token;
     let decoded   = await jwt.verify(token,'secret');
+    console.log(decoded._id);
     let recievers = await bot_users.find({client_id: decoded._id}).toArray();
     console.log(recievers);
     let result    = await answers.insertOne({
