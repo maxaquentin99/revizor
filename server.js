@@ -94,8 +94,8 @@ app.post('/result', async (req, res) => {
     if(req.headers['token']){
     let token     = req.headers.token;
     let decoded   = await jwt.verify(token,'secret');
-    console.log(decoded._id);
-    let recievers = await bot_users.find({client_id: decoded._id}).toArray();
+    let client    = await clients.findOne({_id: ObjectId(decoded._id)})
+    let recievers = await bot_users.find({client_id: client._id}).toArray();
     console.log(recievers);
     let result    = await answers.insertOne({
       client: decoded._id,
@@ -112,11 +112,11 @@ app.post('/result', async (req, res) => {
       console.log(recievers[i].chat_id)
       bot.sendMessage(recievers[i].chat_id, text)
     }
-    recievers.forEach(element => {
-      bot.sendMessage(element.chat_id, text);
-      console.log(element.chat_id)
-      console.log(text)
-    }); 
+    // recievers.forEach(element => {
+    //   bot.sendMessage(element.chat_id, text);
+    //   console.log(element.chat_id)
+    //   console.log(text)
+    // }); 
     res.send(result);
       }
     else { 
