@@ -72,7 +72,7 @@ app.get('/ask', async (req, res) => {
     let token = req.headers.token;
     let user = jwt.decode(token, 'secret');
     let result        = await clients.findOne({_id: ObjectId(user._id)});
-    let qs     = await questions.findOne({client_id: user._id});
+    let qs            = await questions.findOne({client_id: user._id});
     result.question_kit = qs;
     if(!result.question_kit){ 
       result.question_kit = {
@@ -101,20 +101,21 @@ app.post('/result', async (req, res) => {
       question_kit: req.body.question_kit,
       time: Date()
     });
-    res.send(result);
     let text = ''
     req.body.question_kit.map((item, index) => {
-    text = text +' \n '+ req.body.answers[index];
+      text = text +' \n '+ req.body.answers[index];
     })
     recievers.forEach(element => {
       bot.sendMessage(element.chat_id, text);
     }); 
-    } else { 
+    res.send(result);
+      }
+    else { 
       res.status(403).send('No permission')
       }
-    } catch(err){
-      res.status(500).send('Damn man, smth goes wrong') 
-      throw err;
+  } catch(err){
+    res.status(500).send('Damn man, smth goes wrong') 
+    throw err;
   }
 });
 
