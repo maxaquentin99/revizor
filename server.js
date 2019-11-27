@@ -93,10 +93,12 @@ app.post('/result', async (req, res) => {
   try {
     if(req.headers['token']){
     let token     = req.headers.token;
+
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
     let recievers = await bot_users.find({client_id: client._id}).toArray();
     console.log(recievers);
+
     let result    = await answers.insertOne({
       client: decoded._id,
       answers: req.body.answers,
@@ -104,11 +106,12 @@ app.post('/result', async (req, res) => {
       time: Date()
     });
     let text = '';
-    req.body.answers.map((item) => {
-      text = text +' \n '+ item;
-      return 0;
-    })
-    for(var i=0;i<recievers.length;i++){
+
+    console.log(req.body.answers);
+    for(let i=0;i<req.body.answers.length;i++){
+      text = text +' \n '+ req.body.answers[i];
+    }
+    for(let i=0;i<recievers.length;i++){
       console.log(recievers[i].chat_id)
       bot.sendMessage(recievers[i].chat_id, text)
     }
