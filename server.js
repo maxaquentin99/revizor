@@ -102,7 +102,7 @@ app.post('/result', async (req, res) => {
       time: Date()
     });
     let text = ''
-    req.body.question_kit.map((item, index) => {
+    req.body.question_kit.questions.map((item, index) => {
       text = text +' \n '+ req.body.answers[index];
     })
     recievers.forEach(element => {
