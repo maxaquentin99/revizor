@@ -38,15 +38,16 @@ class Main extends Component {
         if(!localStorage.getItem('token')) window.location.assign('/login')
     }
     saveAnswer  = (value, last) => {
-        let answers = JSON.parse(localStorage.getItem('answers'));
+        let answers = JSON.parse(localStorage.getItem('revizor_answers'));
         if(!answers) answers = []
         answers.push(value) 
-        localStorage.setItem('asnwers', answers);
+        localStorage.setItem('revizor_answers', JSON.stringify(answers));
+        console.log(answers);
         if(last) this.send()
     };
 
     send  = () => {
-        let answers = JSON.parse(localStorage.getItem('answers'));
+        let answers = JSON.parse(localStorage.getItem('revizor_answers'));
         axios.post(this.state.url+'/result', {
             questions: this.state.client.question_kit,
             answers: answers
@@ -60,7 +61,7 @@ class Main extends Component {
             console.log(err)
         })
 
-        localStorage.setItem('answers', JSON.stringify([]));
+        localStorage.setItem('revizor_answers', JSON.stringify([]));
         
         window.setTimeout(function () {
             window.location.href = "/";
