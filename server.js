@@ -4,6 +4,13 @@ const jwt        = require('jsonwebtoken');
 const ObjectId   = require('mongodb').ObjectID;
 const path       = require('path');
 const cors       = require('cors')
+const Telegram   = require('telegraf/telegram')
+const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
+let bot_options  = {
+  agent: null,        
+  webhookReply: true 
+}
+let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
 const app        = express();
 const port       = process.env.PORT || 80;
@@ -25,6 +32,7 @@ let db        = null;
 let dbase     = null;
 let answers   = null;
 let clients   = null;
+let bot_users = null;
 let questions = null;
 
 app.use(async (req, res, next) => {
@@ -32,6 +40,7 @@ app.use(async (req, res, next) => {
   dbase      =  await db.db('revizor');
   answers    = dbase.collection('answers');
   clients    = dbase.collection('clients');
+  bot_users  = dbase.collection('bot-users');
   questions  = dbase.collection('questions');
   next();
 })
@@ -83,17 +92,23 @@ app.get('/ask', async (req, res) => {
 app.post('/result', async (req, res) => {
   try {
     if(req.headers['token']){
-    let token = req.headers.token;
-    let decoded = await jwt.verify(token,'secret');
-      if(req.headers['token']){
-        let result = answers.insertOne({
-          client: decoded._id,
-          answers: req.body.answers,
-          question_kit: req.body.question_kit,
-          time: Date()
-        });
-        res.send(result);
-      }
+    let token     = req.headers.token;
+    let decoded   = await jwt.verify(token,'secret');
+    let recievers = bot_users.find({client_id: decoded._id}).toArray();
+    let result    = answers.insertOne({
+      client: decoded._id,
+      answers: req.body.answers,
+      question_kit: req.body.question_kit,
+      time: Date()
+    });
+    res.send(result);
+    let text = ''
+    req.body.question_kit.map((item, index) => {
+    text = text +' \n '+ req.body.answers[index];
+    })
+    recievers.forEach(element => {
+      bot.sendMessage(element.chat_id, text);
+    }); 
     } else { 
       res.status(403).send('No permission')
       }
