@@ -18,6 +18,8 @@
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
+    "telegraf": "^3.33.3",
+    "telegraf-flow": "^8.3.0",
     "telegraph-node": "^1.0.4"
   },
   "scripts": {
