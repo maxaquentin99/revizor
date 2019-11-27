@@ -63,6 +63,7 @@ password.on('message', async (ctx) => {
     try {
         if(!ctx.session.state) {
             ctx.flow.enter('login');
+
         }
         let user = ctx.session.state.user;
         let msg  = ctx.message.text;
@@ -86,7 +87,6 @@ password.on('message', async (ctx) => {
 });
 
 bot.start(async ctx => {
-    ctx.reply('HEY')
     await ctx.reply('Hi! Пожалуйста, введите логин и пароль чтобы войти в свой аккаунт');
     ctx.flow.enter('login');
 })
