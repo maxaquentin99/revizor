@@ -41,8 +41,8 @@ login.on('message', async ctx => {
         let client = await users.findOne({username: ctx.message.text});
         console.log(client)
         if(client) {
+            ctx.session.state = { user : client };
             ctx.flow.enter('password');
-            ctx.session.state.user = client;
         }
         else ctx.reply('Извините, но такой логин не найден. Введите другой логин:')
     } catch (err){
@@ -63,7 +63,6 @@ password.on('message', async (ctx) => {
     try {
         if(!ctx.session.state) {
             ctx.flow.enter('login');
-
         }
         let user = ctx.session.state.user;
         let msg  = ctx.message.text;
@@ -76,7 +75,7 @@ password.on('message', async (ctx) => {
                 }
             }, {upsert: true})
             ctx.reply('Супер! Вы теперь будете получать отзывы своих клиентов тут! ')
-            ctx.flow.leave('password')
+            ctx.flow.leave('password');
             console.log(inserted)
         } else {
             ctx.reply('Пароль неверный');
