@@ -5,8 +5,9 @@ export class YesNoQuestion  extends React.Component {
         super(props)
         this.state = {
             queries: [
-                {src: '6.svg', value: 'Да'},
                 {src: '7.svg', value: 'Нет'},
+                {src: 'partially.svg', value: 'Частично'},
+                {src: '6.svg', value: 'Да'},
             ],
         };
         
