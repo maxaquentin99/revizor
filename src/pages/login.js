@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import axios from 'axios';
 import '../assets/login.css';
 
@@ -9,33 +10,46 @@ class LogIn extends Component {
         password: ''
     }
 
-    login  = (username,password) => {
-        axios.post('/login', {
-        username: username,
-        password: password,
-        }).then((res) => {
-        console.log(res)
-        localStorage.setItem('token', res.data.token)
-        localStorage.setItem('user', res.data.user)
-        window.location.assign('/')
-      }).catch(err => {
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          alert("Error!");
-          throw err;
-        });
-    };
+    login  = async () => {
+        try{
+            let resdata = await axios.post('/login', {
+                username: this.state.username,
+                password: this.state.password,
+                })
+                localStorage.setItem('token', resdata.data.token)
+                this.setState({loggedIn: true})
+            }catch(err){
+                alert("Error!");
+                throw err
+        }
+    }
+
+    logout = async () => {
+        try{
+                localStorage.removeItem('token')
+                this.setState({loggedIn: false})
+                alert("LoggedOut!")
+            }catch(err){
+                throw err
+        }
+    }
 
     render() {    
+
+        if (this.state.loggedIn) {
+            return <Redirect to='/' />
+        }
 
         return (
                 
                 <div className="mainlogin">
 
                 <input type="login" className="username" placeholder="Enter username" onChange={(e) => this.setState({ username: e.target.value })} />
+                <br></br>
                 <input type="password" className="password" placeholder="Enter password" onChange={(e) => this.setState({ password: e.target.value })} />
                 <br></br>
-                <button type="submit" className="login" onClick={() => this.login(this.state.username, this.state.password)}> Log In </button>
+                <button type="submit" onClick={() => this.logout()}> LogOut </button>
+                <button type="submit" onClick={() => this.login(this.state.username, this.state.password)}> LogIn </button>
 
                 </div>
 

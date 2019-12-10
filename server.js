@@ -38,33 +38,57 @@ let questions = null;
 app.use(async (req, res, next) => {
   db         = await new DB();
   dbase      =  await db.db('revizor');
-  answers    = dbase.collection('answers');
   clients    = dbase.collection('clients');
+  answers    = dbase.collection('answers');
   bot_users  = dbase.collection('bot-users');
   questions  = dbase.collection('questions');
   next();
 })
 
-//clients
-app.post('/login', async (req, res) => {
+
+app.get('/api/getclient', async (req, res) => {
   try {
-    let user = await clients.findOne({ 
-      username: req.body.username
-    });
-    if(user){
-      if(user.password === req.body.password){
-        let token = jwt.sign(user, 'secret');
-        res.send({token: token, user: user}) 
-      } else {
-        res.status(403).send('Password incorrect')
-      }
-    } else {
-      res.status(403).send('No such user');
-    }
+  let result = await clients.find({}).toArray()
+  res.send(result);
+  return result;
   } catch(err){
-      throw err;
+  throw err;
+  }
+})
+
+app.post('/signupclient', async (req, res) => {
+  try {
+  let result = await clients.insertOne({
+      username: req.body.username, 
+      password: req.body.password, 
+      time: Date() 
+  });
+  res.send(result);
+  } catch(err){
+  throw err;
   }
 });
+
+app.post('/login', async (req, res) => {
+  try {
+      let user = await clients.findOne({ 
+        username: req.body.username
+      });
+      if(user){
+        if(user.password === req.body.password){
+          let token = jwt.sign(user, 'secret');
+          res.send({token: token})
+        } else {
+          res.status(403).send('Password incorrect!')
+        }
+      } else {
+        res.status(403).send('No such user!');
+      }
+    } catch(err){
+        throw err;
+    }
+});
+
 
 //questions
 app.get('/ask', async (req, res) => {

@@ -15,8 +15,8 @@ export class CommentQuestion extends React.Component {
         let next = "#question"+(this.props.index+1);
         if(this.props.last) next = "#finish"
         return (
-            <div style={{height: '800px', display: 'block'}}>                
-                <div className="question" id={"question"+this.props.index}>{this.props.question.text}</div>
+            <div className="questionblock">                
+                <div className="questiontext" id={"question"+this.props.index}>{this.props.question.text}</div>
                 <hr className="hr"></hr>
                 <input className="comment" type="text" placeholder="text" onChange={(e) => this.setState({ comment: e.target.value })}/>
                 <a href={next}> 

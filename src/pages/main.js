@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import '../assets/main.css';    
 import { SmileQuestion } from '../components/SmileQuestion'
 import { YesNoQuestion } from '../components/YesNoQuestion'
@@ -9,35 +11,48 @@ class Main extends Component {
     constructor(){
         super();
         this.state = { 
+            scrolled: 0,
+            loggedIn: true,
             client: {
                 question_kit: {
                     questions: []
                 }
             },
-            // url: 'http://localhost',
             url: 'http://46.101.234.112'
         }
     }
 
     componentDidMount() {
-        this.getask();
+    this.getask();
+    window.addEventListener("scroll", this.scrollProgress);
+    if(!localStorage.getItem('token')) this.setState({loggedIn: false})
     }
+
+    componentWillUnmount() {
+    window.removeEventListener("scroll", this.scrollProgress);
+    }
+
+    scrollProgress = () => {
+    const scrollPx = document.documentElement.scrollTop;
+    const winHeightPx =
+    document.documentElement.scrollHeight -
+    document.documentElement.clientHeight;
+    const scrolled = `${scrollPx / winHeightPx * 100}%`;
+    this.setState({
+    scrolled: scrolled
+    });
+    };
 
     getask  = async () => {
         try {
             let token    = localStorage.getItem('token');
             let response = await axios.get(this.state.url+'/ask', {headers:{ token: token}})
-            console.log(response)
-            localStorage.setItem('bg-color',response.data.question_kit.color)
             this.setState({ client: response.data })
         } catch (err) {
             throw err
         }
     };
-
-    UNSAFE_componentWillMount(){
-        if(!localStorage.getItem('token')) window.location.assign('/login')
-    }
+    
     saveAnswer  = (value, last) => {
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
         if(!answers) answers = []
@@ -64,31 +79,51 @@ class Main extends Component {
 
         localStorage.setItem('revizor_answers', JSON.stringify([]));
         
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Спасибо за отзыв!',
+            showConfirmButton: false,
+            timer: 3500
+          })
+
         window.setTimeout(function () {
             window.location.href = "/";
-        }, 2000)
+        }, 1500)
     };
 
-    render() {    
-        const { client } = this.state;
+    render() {   
+
+        if (!this.state.loggedIn) {
+            return <Redirect to='/login' />
+        } 
+        
         const questions = this.state.client.question_kit.questions;
+        const progressContainerStyle = {
+            background: "#91ff9e",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+            height: "30px",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100vw",
+            zIndex: 99
+          };
+      
+          const progressBarStyle = {
+            height: "30px",
+            background: "#02de1c",
+            width: this.state.scrolled
+          };
+
         return (
+            
             <div className="main">
-                <div style={{height: '800px', display: 'block', backgroundColor: localStorage.getItem('bg-color')}}>
-                <div className="finallogo" >
-                        {client.logo}
-                        </div>
-                    <div className="start">
-                        Не проходите мимо,
-                        <br></br>
-                         оставьте свой отзыв!
-                    </div>
-                    <a href="#question0"> 
-                        <img src={'startbutton.svg'} className="startbutton" alt="" />
-                    </a>
-                    <br></br>
-                    <img className="logo" src={'revizor.svg'} alt=""/>
-                </div>
+
+            <div className="progress-container" style={progressContainerStyle}>
+            <div className="progress-bar" style={progressBarStyle} />
+            </div>
+
                 {
                     questions.map((q, index) => {
                         let last = false;
@@ -130,62 +165,6 @@ class Main extends Component {
                         return null;
                     })
                 }
-            {/* <div style={{height: '800px', display: 'block'}}>                
-                    <div className="question" id="questionone">{client.qone}</div>
-                    <div className="question" id="questionone">{client.qonee}</div>
-                    <hr className="hr"></hr>
-                    {this.state.questionone.map((item) => { return (
-                        <a href="#questiontwo" key={item.value} onClick={() => {this.questionone(item.value)}}>  
-                            <img className="questionone" src={item.src} alt="" />
-                        </a>
-                    )})}
-                </div> */}
-
-                {/* <div style={{height: '800px', display: 'block'}}>
-                <div className="question" id="questiontwo">{client.qtwo}</div>
-                <div className="question" id="questiontwo">{client.qtwoo}</div>
-                <hr className="hr"></hr>
-                {this.state.questiontwo.map((item) => { return (
-                <a href="#questionthree" key={item.value} onClick={() => {this.questiontwo(item.value)}}>  
-                <img className="questiontwo" src={item.src} alt=""/>
-                </a>
-                )})}
-                </div> */}
-
-
-                {/* <div style={{height: '800px', display: 'block'}}>
-                    <div className="question" id="questionthree">{client.qthree}</div>
-                    <div className="question" id="questionthree">{client.qthreee}</div>
-                    <hr className="hr"></hr>
-                    {this.state.questionthree.map((item) => { return (
-                    <a href="#comment" key={item.value} onClick={() => {this.questionthree(item.value)}}> 
-                    <img className="questionthree" src={item.src} alt=""/>
-                    </a>
-                    )})}
-                    <div className="hint"> минимальная вероятность - 1, максимальная вероятность - 5 </div>
-                </div> */}
-                {/* 
-                <div style={{height: '800px', display: 'block'}}>
-                    <div className="question" id="comment">Оставьте ваш комментарий </div>
-                    <hr className="hr"></hr>
-                    <input className="comment" type="text" placeholder="text" onChange={(e) => this.setState({ comment: e.target.value })}/>
-                    <a href="#finish"> 
-                    <button className="commentok" onClick={() => this.comment(this.state.comment)}>OK</button>
-                    </a>
-                </div> */}
-
-                    <div style={{height: '800px', display: 'block', backgroundColor: localStorage.getItem('bg-color')}} id="finish">
-                        <div className="finallogo" >
-                        {client.logo}
-                        </div>
-                        <div className="thanks">
-                            Спасибо за 
-                            <br></br>
-                            оставленный отзыв!
-                        </div>
-                    <br></br>
-                    <img className="logo" src={'revizor.svg'} alt=""/>
-                    </div>
 
                 </div>
 

@@ -1,42 +1,19 @@
 html{
     scroll-behavior: smooth;
     font-family: 'Montserrat';
+    text-align: center;
 }
 
-body{ 
-    margin:0px; 
+.questionblock{
+    height: 800px;
+    overflow-wrap: break-word;
 }
 
-.main{
-    text-align: center;   
-}
-
-
-.finallogo{
-    font-size: 5rem;
+.questiontext{
     padding-top: 3%;
-    color: white;
-}
-
-.start{
     font-size: 5rem;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    font-weight: bold;
-    color: white;
-}
-
-.startbutton{
-    width: 20%;
-    margin-left: 10%;
-    margin-right: 10%;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
-    border-radius: 11%;
-}
-
-.question{
-    font-size: 5rem;
-    padding-top: 2%;
+    height: 200px;
+    overflow: hidden;
 }
 
 .hr{
@@ -44,56 +21,35 @@ body{
     width: 60%;
 }
 
-.questionone{
+.questionimagesone{
     width: 19%;
-    margin-top: 10%;
+    margin-top: 5%;
     margin-left: 0.5%;
     margin-right: 0.5%;
+    animation-duration: 1.75s;
 }
 
-.questiontwo{
+.questionimagestwo{
     width: 19%;
     margin-top: 9%;
     margin-left: 5%;
     margin-right: 5%;
-}
-
-.questionthree{
-    width: 19%;
-    margin-top: 6%;
-    margin-left: 0.5%;
-    margin-right: 0.5%;
-}
-
-.hint{
-    font-size: 2rem;
-    margin-top: 4%;
-    margin-bottom: 4%;  
+    animation-duration: 1.75s;
 }
 
 .comment{
-    margin-top: 16%;
+    margin-top: 12%;
     padding: 80px;
     font-size: 2rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    border-radius: 3%;
 }
 
 .commentok{
     padding: 80px;
     font-size: 2rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
-}
-
-
-
-.thanks{
-    font-size: 6rem;
-    margin-top: 10%;
     color: white;
-}
-
-.logo{
-    margin: 0 auto;
-    margin-top: 10%;
-    width: 12%;
+    background-color: slategray;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    border-radius: 5%;
 }
