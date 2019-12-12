@@ -12,28 +12,63 @@ class SignUp extends Component {
     }
 
     componentDidMount(){
-        this.getclient();
+        this.getclients();
     }
 
-    getclient  = async () => {
+    getclients  = async () => {
         try{
-            let response = await axios.get('/api/getclient')
-            this.setState({ clients: response.data })
-            console.log(response);
+        let response = await axios.get('/get/clients')
+        this.setState({ clients: response.data })
         }catch (err) {
             throw err;
         } 
     };
 
+    updateclientusername = async (_id) => {
+        try{
+            await axios.post('/update/client/username', {
+            _id,
+            username: this.state.username,
+            })
+            this.getclient();
+            }catch (err) {
+                throw err;
+        } 
+    };
+
+    updateclientpassword = async (_id) => {
+        try{
+            await axios.post('/update/client/password', {
+            _id,
+            password: this.state.password
+            })
+            this.getclient();
+            }catch (err) {
+                throw err;
+        } 
+    };
+
+    deleteclient = async (_id) => {
+        try{
+            await axios.post('/delete/client', {
+            _id,
+            })
+            this.getclient();
+            }catch (err) {
+                throw err;
+        } 
+    };
+
     signup = async () => {
         try{
-            axios.post('/signupclient', {
+            await axios.post('http://localhost:80/signup/client', {
             username: this.state.username,
             password: this.state.password
-        })
-        this.setState({signup: true})
-        }catch(err){
-            throw err
+            })
+            this.getclients();
+            // this.setState({signup: true})
+            }catch(err){
+                throw err
         }
     }
 
@@ -66,14 +101,21 @@ class SignUp extends Component {
 
             <br></br>
 
-            <button type='submit' onClick={() => this.signup(this.state.username, this.state.password)}> Create </button>
+            <button type='submit' onClick={() => this.signup(this.state.username, this.state.password)}> Create a User </button>
 
             <div>List of the users</div>
 
             {clients.map((client, index) => (
-            <div key={index}> 
-            {client.username}
-            {client.password}
+            <div key={index}>
+<           div> - user # {index+1} - </div> 
+            <div> Username -  {client.username}</div>
+            <input type="text" placeholder="Enter New Username" onChange={(e) => this.setState({ username: e.target.value })}/>
+            <button onClick={() => this.updateclientusername(client._id, this.state.username)}> Update Username </button>
+            <div> Password -  {client.password}</div>
+            <input type="text" placeholder="Enter New Password" onChange={(e) => this.setState({ password: e.target.value })}/>
+            <button onClick={() => this.updateclientpassword(client._id, this.state.password)}> Update Password </button>
+            <br></br>
+            <button onClick={() => this.deleteclient(client._id)}> Delete User </button>
             </div>
             ))}
 
@@ -84,3 +126,4 @@ class SignUp extends Component {
 }
 
 export default SignUp;
+

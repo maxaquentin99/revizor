@@ -14,16 +14,13 @@ class Main extends Component {
             scrolled: 0,
             loggedIn: true,
             client: {
-                question_kit: {
                     questions: []
-                }
             },
-            url: 'http://46.101.234.112'
         }
     }
 
     componentDidMount() {
-    this.getask();
+    this.getquestions();
     window.addEventListener("scroll", this.scrollProgress);
     if(!localStorage.getItem('token')) this.setState({loggedIn: false})
     }
@@ -43,10 +40,10 @@ class Main extends Component {
     });
     };
 
-    getask  = async () => {
+    getquestions  = async () => {
         try {
             let token    = localStorage.getItem('token');
-            let response = await axios.get(this.state.url+'/ask', {headers:{ token: token}})
+            let response = await axios.get('/get/questions', {headers:{ token: token}})
             this.setState({ client: response.data })
         } catch (err) {
             throw err
@@ -64,8 +61,8 @@ class Main extends Component {
 
     send  = () => {
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
-        axios.post(this.state.url+'/result', {
-            questions: this.state.client.question_kit,
+        axios.post('/result', {
+            questions: this.state.client.questions,
             answers: answers
         }, {
             headers: {
@@ -98,7 +95,7 @@ class Main extends Component {
             return <Redirect to='/login' />
         } 
         
-        const questions = this.state.client.question_kit.questions;
+        const questions = this.state.client.questions;
         const progressContainerStyle = {
             background: "#91ff9e",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",

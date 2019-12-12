@@ -2,7 +2,6 @@ const express    = require('express');
 const bodyParser = require('body-parser');
 const jwt        = require('jsonwebtoken');
 const ObjectId   = require('mongodb').ObjectID;
-const path       = require('path');
 const cors       = require('cors')
 const Telegram   = require('telegraf/telegram')
 const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
@@ -14,60 +13,28 @@ let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
 const app        = express();
 const port       = process.env.PORT || 80;
-// var   history    = require('connect-history-api-fallback');
+var   history    = require('connect-history-api-fallback');
 
 app.use(cors());
 app.use('/images', express.static('public'));
-app.use('/',       express.static(path.join(__dirname, 'build')));
-app.use('/static', express.static(path.join('build/static')));
-app.use('/login',  express.static(path.join(__dirname, 'build')));
-app.use('/admin',  express.static(path.join(__dirname, 'revizor-admin/dist')))
-app.use('/css',    express.static(path.join(__dirname, 'revizor-admin/dist/css')))
-app.use('/js',     express.static(path.join(__dirname, 'revizor-admin/dist/js')))
-app.use('/img',    express.static(path.join(__dirname, 'revizor-admin/dist/img')))
+app.use('/', express.static('build'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+app.use(history)
 let db        = null;
 let dbase     = null;
 let answers   = null;
 let clients   = null;
 let bot_users = null;
-let questions = null;
 
 app.use(async (req, res, next) => {
-  db         = await new DB();
+  db         =  await new DB();
   dbase      =  await db.db('revizor');
   clients    = dbase.collection('clients');
   answers    = dbase.collection('answers');
   bot_users  = dbase.collection('bot-users');
-  questions  = dbase.collection('questions');
   next();
 })
-
-
-app.get('/api/getclient', async (req, res) => {
-  try {
-  let result = await clients.find({}).toArray()
-  res.send(result);
-  return result;
-  } catch(err){
-  throw err;
-  }
-})
-
-app.post('/signupclient', async (req, res) => {
-  try {
-  let result = await clients.insertOne({
-      username: req.body.username, 
-      password: req.body.password, 
-      time: Date() 
-  });
-  res.send(result);
-  } catch(err){
-  throw err;
-  }
-});
 
 app.post('/login', async (req, res) => {
   try {
@@ -89,21 +56,62 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.get('/get/clients', async (req, res) => {
+  try {
+  let result = await clients.find({}).toArray()
+  res.send(result);
+  return result;
+  } catch(err){
+  throw err;
+  }
+})
 
-//questions
-app.get('/ask', async (req, res) => {
+app.post('/update/client/username', async (req, res) => {
+  try {
+    let result = await clients.updateOne( { _id: ObjectId(req.body._id)} ,{$set: {username: req.body.username}});
+    res.send(result);
+    } catch(err){
+    throw err;
+  }
+});
+
+app.post('/update/client/password', async (req, res) => {
+  try {
+    let result = await clients.updateOne( { _id: ObjectId(req.body._id)},{$set: {password: req.body.password}});
+    res.send(result);
+    } catch(err){
+    throw err;
+  }
+});
+
+app.post('/delete/client', async (req, res) => {
+  try{
+    let result = await clients.deleteOne( { _id: ObjectId(req.body._id)} );
+    res.send(result);
+  } catch(err){
+    throw err;
+  }
+});
+
+app.post('/signup/client', async (req, res) => {
+  try {
+    let result = await clients.insertOne({
+      username: req.body.username, 
+      password: req.body.password, 
+      time: Date()
+    });
+    console.log(result)
+  res.send(result);
+  } catch(err){
+  throw err;
+  }
+});
+
+app.get('/get/questions', async (req, res) => {
   try {
     let token = req.headers.token;
     let user  = jwt.decode(token, 'secret');
     let result        = await clients.findOne({_id: ObjectId(user._id)});
-    let qs            = await questions.findOne({client_id: user._id});
-    result.question_kit = qs;
-    if(!result.question_kit){ 
-      result.question_kit = {
-        client_id: user._id,
-        questions: []
-      }
-    }
     console.log(result)
     res.send(result);
     return result;
@@ -112,8 +120,28 @@ app.get('/ask', async (req, res) => {
   }
 });
 
-//answers
-app.post('/result', async (req, res) => {
+app.post('/update/questions', async (req, res) => {
+  try {
+    if(req.headers['token']){
+      let token   = req.headers['token'];
+      let decoded = await jwt.verify(token,'secret');
+      if(req.body._id) delete req.body._id;
+      let edited  = await clients.updateOne({_id: ObjectId(decoded._id)}, {
+        $set: {
+          ...req.body
+        }
+      });
+      res.send({edited})
+    } else {
+      res.status(403).send('Permission forbidden') 
+    }
+  } catch (err) {
+    res.status(500).send('Damn man, smth goes wrong') 
+    throw err;
+  }
+}); 
+
+app.post('/post/answers', async (req, res) => {
   try {
     if(req.headers['token']){
     let token     = req.headers.token;
@@ -121,12 +149,11 @@ app.post('/result', async (req, res) => {
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
     let recievers = await bot_users.find({client_id: client._id}).toArray();
-    // console.log(recievers);
 
     let result    = await answers.insertOne({
       client: decoded._id,
+      client_name: decoded.username,
       answers: req.body.answers,
-      question_kit: req.body.question_kit,
       time: Date()
     });
     let text = '';
@@ -147,29 +174,5 @@ app.post('/result', async (req, res) => {
     throw err;
   }
 });
-
-app.post('/edit/questions', async (req, res) => {
-  try {
-    if(req.headers['token']){
-      let token   = req.headers['token'];
-      let decoded = await jwt.verify(token,'secret');
-      if(req.body._id) delete req.body._id;
-      let edited  = await questions.updateOne({client_id: decoded._id}, {
-        $set: {
-          ...req.body
-        }
-      },
-      {
-        upsert: true
-      })
-      res.send({edited})
-    } else {
-      res.status(403).send('Permission forbidden') 
-    }
-  } catch (err) {
-    res.status(500).send('Damn man, smth goes wrong') 
-    throw err;
-  }
-}); 
 
 app.listen(port);
