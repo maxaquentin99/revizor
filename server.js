@@ -13,14 +13,13 @@ let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
 const app        = express();
 const port       = process.env.PORT || 80;
-var   history    = require('connect-history-api-fallback');
 
 app.use(cors());
 app.use('/images', express.static('public'));
 app.use('/', express.static('build'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(history)
+
 let db        = null;
 let dbase     = null;
 let answers   = null;
@@ -36,7 +35,7 @@ app.use(async (req, res, next) => {
   next();
 })
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   try {
       let user = await clients.findOne({ 
         username: req.body.username
@@ -56,7 +55,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/get/clients', async (req, res) => {
+app.get('/api/get/clients', async (req, res) => {
   try {
   let result = await clients.find({}).toArray()
   res.send(result);
@@ -66,7 +65,7 @@ app.get('/get/clients', async (req, res) => {
   }
 })
 
-app.post('/update/client/username', async (req, res) => {
+app.post('/api/update/client/username', async (req, res) => {
   try {
     let result = await clients.updateOne( { _id: ObjectId(req.body._id)} ,{$set: {username: req.body.username}});
     res.send(result);
@@ -75,7 +74,7 @@ app.post('/update/client/username', async (req, res) => {
   }
 });
 
-app.post('/update/client/password', async (req, res) => {
+app.post('/api/update/client/password', async (req, res) => {
   try {
     let result = await clients.updateOne( { _id: ObjectId(req.body._id)},{$set: {password: req.body.password}});
     res.send(result);
@@ -84,7 +83,7 @@ app.post('/update/client/password', async (req, res) => {
   }
 });
 
-app.post('/delete/client', async (req, res) => {
+app.post('/api/delete/client', async (req, res) => {
   try{
     let result = await clients.deleteOne( { _id: ObjectId(req.body._id)} );
     res.send(result);
@@ -93,26 +92,24 @@ app.post('/delete/client', async (req, res) => {
   }
 });
 
-app.post('/signup/client', async (req, res) => {
+app.post('/api/signup/client', async (req, res) => {
   try {
     let result = await clients.insertOne({
       username: req.body.username, 
       password: req.body.password, 
       time: Date()
     });
-    console.log(result)
   res.send(result);
   } catch(err){
   throw err;
   }
 });
 
-app.get('/get/questions', async (req, res) => {
+app.get('/api/get/questions', async (req, res) => {
   try {
     let token = req.headers.token;
     let user  = jwt.decode(token, 'secret');
     let result        = await clients.findOne({_id: ObjectId(user._id)});
-    console.log(result)
     res.send(result);
     return result;
     } catch(err){
@@ -120,7 +117,7 @@ app.get('/get/questions', async (req, res) => {
   }
 });
 
-app.post('/update/questions', async (req, res) => {
+app.post('/api/update/questions', async (req, res) => {
   try {
     if(req.headers['token']){
       let token   = req.headers['token'];
@@ -141,7 +138,7 @@ app.post('/update/questions', async (req, res) => {
   }
 }); 
 
-app.post('/post/answers', async (req, res) => {
+app.post('/api/post/answers', async (req, res) => {
   try {
     if(req.headers['token']){
     let token     = req.headers.token;

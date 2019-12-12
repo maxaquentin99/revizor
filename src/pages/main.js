@@ -43,7 +43,7 @@ class Main extends Component {
     getquestions  = async () => {
         try {
             let token    = localStorage.getItem('token');
-            let response = await axios.get('/get/questions', {headers:{ token: token}})
+            let response = await axios.get('/api/get/questions', {headers:{ token: token}})
             this.setState({ client: response.data })
         } catch (err) {
             throw err
@@ -61,7 +61,7 @@ class Main extends Component {
 
     send  = () => {
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
-        axios.post('/result', {
+        axios.post('/api/post/answers', {
             questions: this.state.client.questions,
             answers: answers
         }, {

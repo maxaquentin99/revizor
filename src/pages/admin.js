@@ -7,7 +7,6 @@ export default class Admin  extends React.Component {
     this.state = {
       client: {},
       questions: [],
-      url: 'http://46.101.234.112',
       token: localStorage.getItem('token'),
       types: ['yes-no', 'comment', 'smile', 'num_smile', 'like'],
     };
@@ -29,7 +28,7 @@ export default class Admin  extends React.Component {
   
   getClient   = async () => {
     try {
-      let res = await axios.get(this.state.url+'/post/answers', {headers: {token: this.state.token}});
+      let res = await axios.get('/api/post/answers', {headers: {token: this.state.token}});
       if(!res.data.questions) res.data.questions = []
       res.data.questions.forEach(item => {
         if(!item.reasons) item.reasons = [];
@@ -62,7 +61,7 @@ export default class Admin  extends React.Component {
   saveUser = async (questions) => {
     try {
       this.setState({questions: questions});
-      let res = await axios.post(this.state.url+'/update/questions/', {
+      let res = await axios.post('/api/update/questions/', {
         ...this.state.client,
         questions: this.state.questions
       },{

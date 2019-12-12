@@ -12,7 +12,7 @@ class LogIn extends Component {
 
     login  = async () => {
         try{
-            let resdata = await axios.post('/login', {
+            let resdata = await axios.post('/api/login', {
             username: this.state.username,
             password: this.state.password,
             })

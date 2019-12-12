@@ -8,7 +8,7 @@ class SignUp extends Component {
     state = {
         username: '',
         password: '',
-        clients: []
+        clients: [],
     }
 
     componentDidMount(){
@@ -17,7 +17,7 @@ class SignUp extends Component {
 
     getclients  = async () => {
         try{
-        let response = await axios.get('/get/clients')
+        let response = await axios.get('/api/get/clients')
         this.setState({ clients: response.data })
         }catch (err) {
             throw err;
@@ -26,11 +26,11 @@ class SignUp extends Component {
 
     updateclientusername = async (_id) => {
         try{
-            await axios.post('/update/client/username', {
+            await axios.post('/api/update/client/username', {
             _id,
             username: this.state.username,
             })
-            this.getclient();
+            this.getclients();
             }catch (err) {
                 throw err;
         } 
@@ -38,11 +38,11 @@ class SignUp extends Component {
 
     updateclientpassword = async (_id) => {
         try{
-            await axios.post('/update/client/password', {
+            await axios.post('/api/update/client/password', {
             _id,
             password: this.state.password
             })
-            this.getclient();
+            this.getclients();
             }catch (err) {
                 throw err;
         } 
@@ -50,10 +50,10 @@ class SignUp extends Component {
 
     deleteclient = async (_id) => {
         try{
-            await axios.post('/delete/client', {
+            await axios.post('/api/delete/client', {
             _id,
             })
-            this.getclient();
+            this.getclients();
             }catch (err) {
                 throw err;
         } 
@@ -61,7 +61,7 @@ class SignUp extends Component {
 
     signup = async () => {
         try{
-            await axios.post('http://localhost:80/signup/client', {
+            await axios.post('/api/signup/client', {
             username: this.state.username,
             password: this.state.password
             })
@@ -101,7 +101,7 @@ class SignUp extends Component {
 
             <br></br>
 
-            <button type='submit' onClick={() => this.signup(this.state.username, this.state.password)}> Create a User </button>
+            <button onClick={() => {this.signup()}}> Create a User </button>
 
             <div>List of the users</div>
 
