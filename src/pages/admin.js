@@ -5,12 +5,11 @@ export default class Admin  extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        client: {},
-        questions: [],
-        url: 'http://46.101.234.112',
-        call_types: ['Yes', 'No'],
-        token: localStorage.getItem('token'),
-        types: ['yes-no', 'comment', 'smile', 'num_smile', 'like'],
+      client: {},
+      questions: [],
+      url: 'http://46.101.234.112',
+      token: localStorage.getItem('token'),
+      types: ['yes-no', 'comment', 'smile', 'num_smile', 'like'],
     };
   }
   
