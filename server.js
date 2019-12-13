@@ -69,7 +69,8 @@ app.get('/api/get/clients', async (req, res) => {
 
 app.post('/api/update/client/username', async (req, res) => {
   try {
-    let result = await clients.updateOne( { _id: ObjectId(req.body._id)} ,{$set: {username: req.body.username}});
+    let result = await clients.updateOne( { _id: ObjectId(req.body._id)},
+    {$set: {username: req.body.username}});
     res.send(result);
     } catch(err){
     throw err;
@@ -112,7 +113,7 @@ app.get('/api/get/questions', async (req, res) => {
   try {
     let token = req.headers.token;
     let user  = jwt.decode(token, 'secret');
-    let result        = await clients.findOne({_id: ObjectId(user._id)});
+    let result   = await clients.findOne({_id: ObjectId(user._id)});
     res.send(result);
     return result;
     } catch(err){
@@ -124,7 +125,7 @@ app.post('/api/update/questions', async (req, res) => {
   try {
     if(req.headers['token']){
       let token   = req.headers['token'];
-      let decoded = await jwt.verify(token,'secret');
+      let decoded = await jwt.decode(token,'secret');
       if(req.body._id) delete req.body._id;
       let edited  = await clients.updateOne({_id: ObjectId(decoded._id)}, {
         $set: {

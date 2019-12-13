@@ -21,6 +21,7 @@ export default class Admin  extends React.Component {
     questions.push({
       type: 'yes-no',
       text: '',
+      bot_text: '',
       reasons: []
     })
     this.setState({questions: questions})
@@ -28,7 +29,7 @@ export default class Admin  extends React.Component {
   
   getClient   = async () => {
     try {
-      let res = await axios.get('/api/post/answers', {headers: {token: this.state.token}});
+      let res = await axios.get('/api/get/questions', {headers: {token: this.state.token}});
       if(!res.data.questions) res.data.questions = []
       res.data.questions.forEach(item => {
         if(!item.reasons) item.reasons = [];
@@ -66,7 +67,7 @@ export default class Admin  extends React.Component {
         questions: this.state.questions
       },{
         headers: {
-          token: this.token,
+          token: this.state.token,
         }
       })
       console.log(res)
@@ -88,10 +89,9 @@ export default class Admin  extends React.Component {
           {
           questions.map((q, index) => { return (
               <div key={index}>
-                <input placeholder="Text" onChange={(e) => {questions[index].text      = e.target.value;this.saveState(questions) }} ></input>
-                <input placeholder="Bot text" onChange={(e) => {questions[index].bot_text  = e.target.value;this.saveState(questions) }} ></input>
-                {/* <span>{JSON.stringify(this.state.questions)}</span> */}
-                <select placeholder="type" name="type" onChange={(e) => {questions[index].type  = e.target.value;this.saveState(questions) }} >
+                <input placeholder="Text" value={q.text} onChange={(e) => {questions[index].text      = e.target.value;this.saveState(questions) }} ></input>
+                <input placeholder="Bot text" value={q.bot_text} onChange={(e) => {questions[index].bot_text  = e.target.value;this.saveState(questions) }} ></input>
+                <select placeholder="type" name="type" defaultValue={q.type} onChange={(e) => {questions[index].type  = e.target.value;this.saveState(questions) }} >
                   {
                     this.state.types.map((t, tindex) => { 
                       return (
@@ -111,9 +111,9 @@ export default class Admin  extends React.Component {
                     {
                       q.reasons.map((r, rindex) => { return (
                         <div key={rindex}>
-                          <input placeholder="text" onChange={(e) => {q.reasons[rindex].text  = e.target.value; this.saveState(questions) }}></input>
+                          <input placeholder="text" value={q.reasons[rindex].text} onChange={(e) => {q.reasons[rindex].text  = e.target.value; this.saveState(questions) }}></input>
                           Employee photos
-                          <input type='checkbox' value={true} onChange={(e) => {q.reasons[rindex].eCheck = !q.reasons[rindex].eCheck; this.saveState(questions) }}></input>
+                          <input type='checkbox' value={true} checked={q.reasons[rindex].eCheck === true} onChange={(e) => {q.reasons[rindex].eCheck = !q.reasons[rindex].eCheck; this.saveState(questions) }}></input>
                           <button onClick={() => {questions[index].reasons.splice(rindex, 1); this.saveState(questions)}}>Delete da reason</button>
                         </div>
                       )})

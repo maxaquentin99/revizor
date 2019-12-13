@@ -14,7 +14,7 @@ class Main extends Component {
             scrolled: 0,
             loggedIn: true,
             client: {
-                    questions: []
+                questions: []
             },
         }
     }
