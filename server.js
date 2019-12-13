@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const jwt        = require('jsonwebtoken');
 const ObjectId   = require('mongodb').ObjectID;
 const cors       = require('cors')
+var history = require('connect-history-api-fallback');
 const Telegram   = require('telegraf/telegram')
 const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
 let bot_options  = {
@@ -14,6 +15,7 @@ const DB         = require('./data');
 const app        = express();
 const port       = process.env.PORT || 80;
 
+app.use(history())
 app.use(cors());
 app.use('/images', express.static('public'));
 app.use('/', express.static('build'));
