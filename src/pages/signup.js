@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Badge from '@material-ui/core/Badge';
+import SaveIcon from '@material-ui/icons/Save';
 import axios from 'axios';
 import '../assets/signup.css';    
 
@@ -9,6 +16,7 @@ class SignUp extends Component {
         username: '',
         password: '',
         clients: [],
+        show: false
     }
 
     componentDidMount(){
@@ -62,6 +70,7 @@ class SignUp extends Component {
     signup = async () => {
         try{
             await axios.post('/api/signup/client', {
+            brandname: this.state.brandname,
             username: this.state.username,
             password: this.state.password
             })
@@ -70,6 +79,12 @@ class SignUp extends Component {
             }catch(err){
                 throw err
         }
+    }
+
+    show = async (e) => {
+        this.setState({
+            showResults: !this.state.showResults 
+          });
     }
 
     render() {    
@@ -83,41 +98,94 @@ class SignUp extends Component {
         return (
             <div>
 
-            <div>Create a User</div>
 
-            <input 
-            type='text' 
-            placeholder='Write Username' 
-            required
-            onChange={(e) => this.setState({username: e.target.value})}/>
-            
-            <br></br>
+                <div className="mainsignup">
+                <div style={{fontSize: '3rem'}} >Create a User</div>
+                <br></br>
+                <Grid item>
+                <TextField id="signupbrandname" label="BrandName" variant="outlined" onChange={(e) => this.setState({ brandname: e.target.value })} />
+                </Grid>
+                <br></br>
+                <Grid item>
+                <TextField id="signupusername" label="Username" variant="outlined" onChange={(e) => this.setState({ username: e.target.value })} />
+                </Grid>
+                <br></br>
+                <Grid item>
+                <TextField id="signuppassword" label="Password" variant="outlined" onChange={(e) => this.setState({ password: e.target.value })} />
+                </Grid>
+                <br></br>
+                <Grid item>
+                <Button variant="outlined" color="primary" onClick={() => {this.show()}}> List Of Users </Button>
+                <Button variant="outlined" color="primary" onClick={() => {this.signup()}}> Create a User </Button>
+                </Grid>
+                <br></br>
+                </div>
 
-            <input 
-            type='text' 
-            placeholder='Write Password' 
-            required
-            onChange={(e) => this.setState({password: e.target.value})}/>
+                <hr></hr>
+                <div style={{ display: this.state.showResults ? "block" : "none"}}>
+                {clients.map((client, index) => (
+                <div key={index}>
+               
+                <Badge color="secondary" badgeContent={index+1}>
+                <AccountCircle className="loginicon" />
+                </Badge>
 
-            <br></br>
+                <br></br>
+                <br></br>
+               
+                <TextField
+                label="Brandname"
+                variant="outlined"
+                defaultValue="Brandname"
+                onChange={(e) => this.setState({ brandname: e.target.value })}
+                />
 
-            <button onClick={() => {this.signup()}}> Create a User </button>
+                <br></br>
+                <br></br>
+               
+                <TextField
+                label="Username"
+                variant="outlined"
+                defaultValue={client.username}
+                onChange={(e) => this.setState({ username: e.target.value })}
+                />
+               
+                <br></br>
+                <br></br>
+               
+                <TextField
+                label="Password"
+                variant="outlined"
+                defaultValue={client.password}
+                onChange={(e) => this.setState({ password: e.target.value })}
+                />
 
-            <div>List of the users</div>
+                <br></br>
+                <br></br>
 
-            {clients.map((client, index) => (
-            <div key={index}>
-<           div> - user # {index+1} - </div> 
-            <div> Username -  {client.username}</div>
-            <input type="text" placeholder="Enter New Username" onChange={(e) => this.setState({ username: e.target.value })}/>
-            <button onClick={() => this.updateclientusername(client._id, this.state.username)}> Update Username </button>
-            <div> Password -  {client.password}</div>
-            <input type="text" placeholder="Enter New Password" onChange={(e) => this.setState({ password: e.target.value })}/>
-            <button onClick={() => this.updateclientpassword(client._id, this.state.password)}> Update Password </button>
-            <br></br>
-            <button onClick={() => this.deleteclient(client._id)}> Delete User </button>
-            </div>
-            ))}
+                <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => this.deleteclient(client._id)}>
+                Delete
+                <DeleteIcon />
+                </Button>
+
+                <Button
+                variant="contained"
+                color="primary"
+                onClick={() => this.updateclient(client._id, this.state.brandname, this.state.username, this.state.password)}>
+                Update
+                <SaveIcon />
+                </Button>
+
+
+
+                <hr></hr>
+                </div>
+                ))}
+                </div>
+
 
             </div>
             )

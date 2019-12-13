@@ -56,7 +56,7 @@ class LogIn extends Component {
                 <AccountCircle className="loginicon" />
                 </Grid>
                 <Grid item>
-                <TextField id="loginusername" label="Username" onChange={(e) => this.setState({ username: e.target.value })} />
+                <TextField  id="loginusername" label="Username" onChange={(e) => this.setState({ username: e.target.value })} />
                 </Grid>
                 </Grid>
 

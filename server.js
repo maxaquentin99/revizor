@@ -97,6 +97,7 @@ app.post('/api/delete/client', async (req, res) => {
 app.post('/api/signup/client', async (req, res) => {
   try {
     let result = await clients.insertOne({
+      brandname: req.body.brandname,
       username: req.body.username, 
       password: req.body.password, 
       time: Date()
