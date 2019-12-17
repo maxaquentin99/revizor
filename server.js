@@ -160,7 +160,7 @@ app.post('/api/post/answers', async (req, res) => {
     let text = '';
     console.log(req.body)
     for(let i=0;i<req.body.answers.length;i++){
-      text = text +'\n'+req.body.questions.questions[i].bot_text+' - '+ req.body.answers[i];
+      text = text +'\n'+req.body.questions[i].bot_text+' - '+ req.body.answers[i];
     }
     for(let i=0;i<recievers.length;i++){
       bot.sendMessage(recievers[i].chat_id, text)
