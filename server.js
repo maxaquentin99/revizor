@@ -163,11 +163,15 @@ app.post('/api/post/answers', async (req, res) => {
       let answer = req.body.answers[i];
       if(typeof req.body.answers[i] === 'object') {
         answer = req.body.answers[i].answer
-        let reason = req.body.answers[i].reason
+        let reasons = req.body.answers[i].reasons
         if(answer === 'Like'){
-          text = text + `Поздравляем! Вашему заведению поставилики Like✅\n`;
+          text = text + `Поздравляем!✅ Вашему заведению поставилики Like\n`;
         } else {
-          text = text + `Внимание! Вашему заведению поставили Dislike❌\nПричина - ${reason}\n`;
+          text = text + `Внимание!❌ Вашему заведению поставили Dislike\n Причина: \n`;
+          // disable no-loop-func
+          for (let i = 0; i < reasons.length; i++) {
+            if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
+          }
         }
       }
       else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
