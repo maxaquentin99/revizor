@@ -6,6 +6,7 @@ import '../assets/main.css';
 import { SmileQuestion } from '../components/SmileQuestion'
 import { YesNoQuestion } from '../components/YesNoQuestion'
 import { CommentQuestion } from '../components/CommentQuestion'
+import { LikeQuestion } from '../components/LikeQuestion'
 
 class Main extends Component {
     constructor(){
@@ -45,15 +46,16 @@ class Main extends Component {
             let token    = localStorage.getItem('token');
             let response = await axios.get('/api/get/questions', {headers:{ token: token}})
             this.setState({ client: response.data })
+            console.log(response)
         } catch (err) {
             throw err
         }
     };
     
-    saveAnswer  = (value, last) => {
+    saveAnswer  = (value, last, index) => {
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
         if(!answers) answers = []
-        answers.push(value) 
+        answers[index] = value;
         localStorage.setItem('revizor_answers', JSON.stringify(answers));
         console.log(answers);
         if(last) this.send()
@@ -158,6 +160,17 @@ class Main extends Component {
                                     index={index}
                                     question={questions[index]} 
                                     />)
+                        } else if(q.type === 'like') {
+                            return (
+                                    <LikeQuestion
+                                    save={this.saveAnswer} 
+                                    last={last} 
+                                    key={index}
+                                    index={index}
+                                    question={questions[index]} 
+                                    reasons={questions[index].reasons} 
+                                    />
+                            )
                         }
                         return null;
                     })
