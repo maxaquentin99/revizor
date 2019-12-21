@@ -29,10 +29,10 @@ export class LikeQuestion extends React.Component {
                                 answer: this.state.answer
                             }, this.props.last, this.props.index)
                         }}>
-                            <img className="questionimagestwo animated pulse infinite" src='6.svg' alt="Like"/>
+                            <img className="questionimagestwo animated pulse infinite" src='like.svg' alt="Like"/>
                         </a>
                         <span onClick={() => {this.setState({answer: 'Dislike'})}}>  
-                            <img className="questionimagestwo animated pulse infinite" src='7.svg' alt="Dislike"/>
+                            <img className="questionimagestwo animated pulse infinite" src='dislike.svg' alt="Dislike"/>
                         </span>
                     </div>
                 }
