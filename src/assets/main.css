@@ -56,14 +56,38 @@ html{
 
 .reason { 
     display: block;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
     width: 80%;
     max-width: 700px;
     min-width: 300px;
-    margin: 40px auto;
+    margin: 20px auto;
     background-color: #e1e1e1;
     text-decoration: none;
     color: black;
     font-size: 20px;
+}
+
+.selected_reason {
+    background-color: #9DDF77;
+    box-shadow: 4px 4px 4px rgba(157, 223, 119, 0.25);
+    border-radius: 5px;
+}
+
+.ok-button {
+    display: block;
+    padding: 20px 40px;
+    background: #73D13D;
+    border-radius: 10px;
+    text-decoration: none;
+    margin: 20px auto;
+    font-size: 30px;
+    color: black;
+    width: 139px;
+}
+
+.btn-container {
+    text-align: center;
+    width: 100%;
+    margin-top: 40px;
 }

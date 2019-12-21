@@ -9,10 +9,24 @@ export class LikeQuestion extends React.Component {
                 {src: 'dislike.svg', value: 'Dislike'},
             ],
             answer: 'Like',
-            reason: null
-        };
+            reason: null,
+            chosen_reasons: []
+        }
+    }
+    setReason(index) {
+        let creasons = this.state.chosen_reasons;
+        if(!creasons[index]) creasons[index] = this.props.reasons[index]
+        else creasons[index] = null;
+        this.setState({chosen_reasons: creasons});
     }
     render(){
+        let length = () =>{
+            let l = 0;
+            this.state.chosen_reasons.forEach(r => {
+                if(r) l+=1
+            });
+            return l;
+        }
         let nextLink = "#question"+(this.props.index+1) 
         if(this.props.last) nextLink = "#finish";
         return (
@@ -25,7 +39,7 @@ export class LikeQuestion extends React.Component {
                         <a href={nextLink} onClick={() => {
                             this.setState({answer: 'Like'}); 
                             this.props.save({
-                                reason: this.state.reason,
+                                reasons: null,
                                 answer: this.state.answer
                             }, this.props.last, this.props.index)
                         }}>
@@ -43,17 +57,28 @@ export class LikeQuestion extends React.Component {
                         <hr className="hr"></hr>
                         {
                             this.props.reasons.map((r, index) => {
+                                let class_name = 'reason';
+                                if(this.state.chosen_reasons[index]) class_name += ' selected_reason' 
                                 return (
-                                    <a className="reason" key={index} href={nextLink} onClick={() => {
-                                    this.props.save({
-                                        reason: r.text,
-                                        answer: this.state.answer
-                                    }, this.props.last, this.props.index)}}>
+                                    <div className={class_name} onClick={() => {this.setReason(index)}} key={index} >
                                         {r.text}
-                                    </a>
+                                    </div>
                                 )
                             })
                         }
+                        <div className="btn-container">
+                            {
+                                length() > 0 &&
+                                <a  className="ok-button" onClick={() => {
+                                        this.props.save({
+                                            reasons: this.state.chosen_reasons,
+                                            answer: this.state.answer
+                                        }, this.props.last, this.props.index)}}
+                                    href={nextLink}
+                                >OK
+                                </a>
+                            }
+                        </div>
                     </div>
                 }
             </div>
