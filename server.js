@@ -165,12 +165,12 @@ app.post('/api/post/answers', async (req, res) => {
         answer = req.body.answers[i].answer
         let reason = req.body.answers[i].reason
         if(answer === 'Like'){
-          text = text + `Поздравляем! Вашему заведению поставилики Like✅`;
+          text = text + `Поздравляем! Вашему заведению поставилики Like✅\n`;
         } else {
-          text = text + `Внимание! Вашему заведению поставили Dislike❌\nПричина - ${reason}`;
+          text = text + `Внимание! Вашему заведению поставили Dislike❌\nПричина - ${reason}\n`;
         }
       }
-      else text = text+`${req.body.questions[i].bot_text} - ${answer}`;
+      else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
     }
     for(let i=0;i<recievers.length;i++){
       bot.sendMessage(recievers[i].chat_id, text)
