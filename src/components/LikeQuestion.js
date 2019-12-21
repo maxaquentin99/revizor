@@ -44,10 +44,10 @@ export class LikeQuestion extends React.Component {
                         {
                             this.props.reasons.map((r, index) => {
                                 return (
-                                    <a className="reason" key={index} href={nextLink} onClick={() => {this.setState({reason: r});
+                                    <a className="reason" key={index} href={nextLink} onClick={() => {
                                     this.props.save({
                                         reason: this.state.reason,
-                                        answer: this.state.answer
+                                        answer: r.text
                                     }, this.props.last, this.props.index)}}>
                                         {r.text}
                                     </a>
