@@ -5,8 +5,8 @@ export class LikeQuestion extends React.Component {
         super(props)
         this.state = {
             queries: [
-                {src: '6.svg', value: 'Like'},
-                {src: '7.svg', value: 'Dislike'},
+                {src: 'like.svg', value: 'Like'},
+                {src: 'dislike.svg', value: 'Dislike'},
             ],
             answer: 'Like',
             reason: null
