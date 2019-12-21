@@ -3,12 +3,12 @@ const bodyParser = require('body-parser');
 const jwt        = require('jsonwebtoken');
 const ObjectId   = require('mongodb').ObjectID;
 const cors       = require('cors')
-var history = require('connect-history-api-fallback');
+var   history    = require('connect-history-api-fallback');
 const Telegram   = require('telegraf/telegram')
 const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
 let bot_options  = {
-  agent: null,        
-  webhookReply: true 
+  agent: null,
+  webhookReply: true
 }
 let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
@@ -160,7 +160,17 @@ app.post('/api/post/answers', async (req, res) => {
     let text = '';
     console.log(req.body)
     for(let i=0;i<req.body.answers.length;i++){
-      text = text +'\n'+req.body.questions[i].bot_text+' - '+ req.body.answers[i];
+      let answer = req.body.answers[i];
+      if(typeof req.body.answers[i] === 'object') {
+        answer = req.body.answers[i].answer
+        let reason = req.body.answers[i].reason
+        if(answer === 'Like'){
+          text = text + `Поздравляем! Вашему заведению поставилики Like✅`;
+        } else {
+          text = text + `Внимание! Вашему заведению поставили Dislike❌\nПричина - ${reason}`;
+        }
+      }
+      else text = text+`${req.body.questions[i].bot_text} - ${answer}`;
     }
     for(let i=0;i<recievers.length;i++){
       bot.sendMessage(recievers[i].chat_id, text)
@@ -176,4 +186,6 @@ app.post('/api/post/answers', async (req, res) => {
   }
 });
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(port);
+});
