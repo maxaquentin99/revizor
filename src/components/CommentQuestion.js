@@ -20,7 +20,9 @@ export class CommentQuestion extends React.Component {
                 <hr className="hr"></hr>
                 <input className="comment" type="text" placeholder="text" onChange={(e) => this.setState({ comment: e.target.value })}/>
                 <a href={next}> 
-                    <button className="commentok" onClick={() => {this.props.save(this.state.comment, this.props.last)}}>OK</button>
+                    <button className="commentok" onClick={() => {this.props.save(this.state.comment, this.props.last, this.props.index)}}>
+                        OK
+                    </button>
                 </a>
             </div>
         )

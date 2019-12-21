@@ -10,7 +10,6 @@ export class YesNoQuestion  extends React.Component {
                 {src: '6.svg', value: 'Да'},
             ],
         };
-        
     }
     saveAnswer  = (value) => {
         let answers = JSON.parse(localStorage.getItem('answers'));
@@ -27,7 +26,7 @@ export class YesNoQuestion  extends React.Component {
                 <div className="questiontext" id={'question'+this.props.index}>{this.props.question.text}</div>
                 <hr className="hr"></hr>
                 {this.state.queries.map((item) => { return (
-                    <a href={next} key={item.value} onClick={() => {this.props.save(item.value, this.props.last)}}>  
+                    <a href={next} key={item.value} onClick={() => {this.props.save(item.value, this.props.last, this.props.index)}}>  
                         <img className="questionimagestwo  animated pulse infinite" src={item.src} alt=""/>
                     </a>
                 )})}

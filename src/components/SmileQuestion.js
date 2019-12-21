@@ -31,7 +31,7 @@ export class SmileQuestion extends React.Component {
             <div className="questiontext" id={"question"+this.props.index}>{this.props.question.text}</div>
             <hr className="hr"></hr>
             {queries.map((item) => { return (
-                <a href={next} key={item.value} onClick={() => {this.props.save(item.value, this.props.last)}}>  
+                <a href={next} key={item.value} onClick={() => {this.props.save(item.value, this.props.last, this.props.index)}}>  
                     <img className="questionimagesone animated pulse infinite" src={item.src} alt="" />
                 </a>
             )})}
