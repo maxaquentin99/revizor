@@ -72,6 +72,7 @@ html{
     background-color: #9DDF77;
     box-shadow: 4px 4px 4px rgba(157, 223, 119, 0.25);
     border-radius: 5px;
+    color: white;
 }
 
 .ok-button {
