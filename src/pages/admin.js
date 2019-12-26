@@ -1,5 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Switch from '@material-ui/core/Switch';
 import Modal from 'react-modal';
 import Employee from './employee.js';
 import '../assets/admin.css'
@@ -126,35 +133,100 @@ export default class Admin  extends React.Component {
     let employees = this.state.employees
     return (
       <div className="questionblock">
+
+        <Button variant="outlined" color="primary" onClick={() => {this.addQuestion()}}> Add a Question </Button>
+        <br></br>
+        <br></br>
+        <br></br>
+        
         {
           questions.map((q, index) => { return (
               <div key={index}>
-                <input placeholder="Text" value={q.text} onChange={(e) => {questions[index].text = e.target.value;this.saveState(questions) }} ></input>
-                <input placeholder="Bot text" value={q.bot_text} onChange={(e) => {questions[index].bot_text  = e.target.value;this.saveState(questions) }} ></input>
-                <select placeholder="type" name="type" defaultValue={q.type} onChange={(e) => {questions[index].type  = e.target.value;this.saveState(questions) }} >
-                  {
-                    this.state.types.map((t, tindex) => { 
-                      return (
-                        <option value={t} key={tindex}>
-                          {t}
-                        </option>
-                      )
-                    })
-                  }
-                </select>
-                <button onClick={() => {this.deleteQuestion(index)}}>Delete</button>
-                {q.type === 'like' &&
-                  <button onClick={() => {this.addReason(index)}}>Add a reason</button>
+
+                <Grid container spacing={3} alignItems="flex-end" justify="center">
+                <Grid item>
+                <TextField
+                label="Question"
+                multiline
+                value={q.text}
+                onChange={(e) => {questions[index].text = e.target.value;this.saveState(questions) }}
+                variant="outlined"
+                id="questiontext"
+                />                
+                </Grid>
+                <Grid item>
+                <TextField
+                label="Text for Bot"
+                multiline
+                value={q.bot_text}
+                onChange={(e) => {questions[index].bot_text  = e.target.value;this.saveState(questions) }}
+                variant="outlined"
+                id="bottext"
+                />
+                </Grid>
+                <Grid item>
+                <InputLabel id="demo-simple-select-label">Question Type</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                defaultValue={q.type}
+                onChange={(e) => {questions[index].type  = e.target.value;this.saveState(questions) }}
+                >
+                {
+                this.state.types.map((t, tindex) => { 
+                return (
+
+                <MenuItem value={t} key={tindex}>{t}</MenuItem>
+                )
+                })
                 }
+                </Select>
+                </Grid>
+                <Grid item>
+                {q.type === 'like' &&
+                <Button variant="outlined" color="primary" onClick={() => {this.addReason(index)}}> Add a Reason </Button>
+                }
+                </Grid>
+                <Grid item>
+                <Button variant="outlined" color="secondary" onClick={() => {this.deleteQuestion(index)}}> Delete Question </Button>
+                </Grid>
+                </Grid>
+
+
+                  <br></br>
+                  <br></br>
+                  <br></br>
+
+
                 {q.reasons &&
                   <div>
                     {
                       q.reasons.map((r, rindex) => { return (
                         <div key={rindex}>
-                          <input placeholder="text" value={q.reasons[rindex].text} onChange={(e) => {q.reasons[rindex].text  = e.target.value; this.saveState(questions) }}></input>
-                          Employee photos
-                          <input type='checkbox' value={true} checked={q.reasons[rindex].eCheck === true} onChange={(e) => {q.reasons[rindex].eCheck = !q.reasons[rindex].eCheck; this.saveState(questions) }}></input>
-                          <button onClick={() => {questions[index].reasons.splice(rindex, 1); this.saveState(questions)}}>Delete da reason</button>
+                        <Grid container spacing={10} alignItems="flex-end" justify="center">
+                        <Grid item>
+                        <TextField
+                        label="Reason"
+                        multiline
+                        value={q.reasons[rindex].text}
+                        onChange={(e) => {q.reasons[rindex].text  = e.target.value; this.saveState(questions) }}
+                        variant="outlined"
+                        id="questiontext"
+                        />                
+                        </Grid>
+                        <Grid item>
+                        Employee photos
+                        <Switch
+                        checked={q.reasons[rindex].eCheck === true}
+                        onChange={(e) => {q.reasons[rindex].eCheck = !q.reasons[rindex].eCheck; this.saveState(questions) }}
+                        value={true}
+                        color="primary"
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
+                        </Grid>
+                        <Grid item>
+                        <Button variant="outlined" color="secondary" onClick={() => {questions[index].reasons.splice(rindex, 1); this.saveState(questions)}}> Delete Reason </Button>
+                        </Grid>
+                        </Grid>
                         </div>
                       )})
                     }
@@ -163,34 +235,72 @@ export default class Admin  extends React.Component {
               </div>
           )})
         }
-        <button onClick={() => {this.addQuestion()}}>Add a question</button>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+
+        <Button variant="outlined" color="primary" onClick={() => {this.addEmployee()}}>Add an Employee</Button>
+
+
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+
         {employees.length > 0 &&
           <h2>Employees</h2> &&
           employees.map((employee, i) => { return (
             <div key={i}>
-                <div>
-                  <input value={employee.name} onChange={(e)=> {employees[i].name = e.target.value;this.setState({employees:employees})}} />
-                  <br/>
-                  <input value={employee.role} onChange={(e)=> {employee.role = e.target.value;this.setState({employees:employees})}}/>
-                </div>
+              <Grid container spacing={3} alignItems="flex-end" justify="center">
+              <Grid item>
               <img key={'ava'+i} src={'/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
-              <button onClick={()=> {this.openModal(i)}}>Edit photo</button>
-              <button onClick={()=> {this.deleteEmployee(i)}}>Delete</button>
+              </Grid>
+              <Grid item>
+              <TextField
+              label="Name"
+              multiline
+              value={employee.name}
+              onChange={(e)=> {employees[i].name = e.target.value;this.setState({employees:employees})}}
+              variant="outlined"
+              id="questiontext"
+              />                
+              </Grid>
+              <Grid item>
+              <TextField
+              label="Role"
+              multiline
+              value={employee.role}
+              onChange={(e)=> {employee.role = e.target.value;this.setState({employees:employees})}}
+              variant="outlined"
+              id="bottext"
+              />
+              </Grid>
+              <Grid item>
+              <Button variant="outlined" color="primary" onClick={()=> {this.openModal(i)}}>Edit Photo</Button>
+              </Grid>
+              <Grid item>
+              <Button variant="outlined" color="secondary" onClick={()=> {this.deleteEmployee(i)}}> Delete Photo</Button>
+              </Grid>
+              </Grid>
             </div>
           )})
         }
-        <Modal isOpen={this.state.modalIsOpen}
-          ariaHideApp={false}
-        >
-          <Employee
+            <Modal isOpen={this.state.modalIsOpen}
+            ariaHideApp={false}
+            >
+            <Employee
             eindex={this.state.eindex}
             employees={employees}
             onRequestClose={this.closeModal}
-          />
-        </Modal>
-        <button onClick={() => {this.addEmployee()}}>Add an employee</button>
+            />
+            </Modal>
+            <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
 
-        <button onClick={() => {this.saveUser(questions, employees)}}>Save it!</button>
+            <Button variant="outlined" color="primary" onClick={() => {this.saveUser(questions, employees)}}>Save All</Button>
 
       </div>
     )

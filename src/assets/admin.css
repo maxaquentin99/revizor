@@ -4,3 +4,19 @@ body {
 .employee-ava {
     width: 50px;
 }
+
+.MuiFormLabel-root{
+    font-size: 1rem !important
+}
+
+#questiontext{
+    font-size: 1rem !important
+}
+
+#bottext{
+    font-size: 1rem !important
+}
+
+.MuiButton-root{
+    font-size: 1rem !important
+}
