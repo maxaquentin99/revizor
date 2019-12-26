@@ -174,7 +174,7 @@ export default class Admin  extends React.Component {
                   <br/>
                   <input value={employee.role} onChange={(e)=> {employee.role = e.target.value;this.setState({employees:employees})}}/>
                 </div>
-              <img key={'ava'+i} src={'http://localhost/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
+              <img key={'ava'+i} src={'/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
               <button onClick={()=> {this.openModal(i)}}>Edit photo</button>
               <button onClick={()=> {this.deleteEmployee(i)}}>Delete</button>
             </div>
