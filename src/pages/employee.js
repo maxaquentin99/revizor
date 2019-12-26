@@ -56,7 +56,7 @@ export default class Admin  extends React.Component {
     render()
     {
         let employee = this.props.employees[this.props.eindex];
-        let image = 'http://localhost/avatars/'+employee.img;
+        let image = '/avatars/'+employee.img;
         if(this.state.image) image = this.state.image;
         return (
             <div>

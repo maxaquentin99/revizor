@@ -11,11 +11,6 @@ export default class Admin  extends React.Component {
       questions: [],
       employees: [],
       eindex: null,
-      employeeForm:{
-        name: '',
-        img: '',
-        role: '',
-      },
       modalIsOpen: false,
       token: localStorage.getItem('token'),
       types: ['yes-no', 'comment', 'smile', 'num_smile', 'like'],
@@ -91,7 +86,11 @@ export default class Admin  extends React.Component {
   
   addEmployee = () => {
     let employees = this.state.employees;
-    employees.push(this.state.employeeForm);
+    employees.push({
+      name: '',
+      img: 'revizor.svg',
+      role: '',
+    });
     this.setState({
       employees: employees,
     });
@@ -166,7 +165,7 @@ export default class Admin  extends React.Component {
         }
         <button onClick={() => {this.addQuestion()}}>Add a question</button>
         {employees.length > 0 &&
-          <h2>Employees</h2> && 
+          <h2>Employees</h2> &&
           employees.map((employee, i) => { return (
             <div key={i}>
                 <div>
@@ -183,7 +182,7 @@ export default class Admin  extends React.Component {
         <Modal isOpen={this.state.modalIsOpen}
           ariaHideApp={false}
         >
-          <Employee 
+          <Employee
             eindex={this.state.eindex}
             employees={employees}
             onRequestClose={this.closeModal}
