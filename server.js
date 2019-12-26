@@ -6,6 +6,17 @@ const cors       = require('cors')
 var   history    = require('connect-history-api-fallback');
 const Telegram   = require('telegraf/telegram')
 const tg_token   = '998789488:AAHPSeHvgNktSIWNaTEXamzTYSk3-PlZOjc';
+var multer       = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, __dirname+'/avatars')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now()+'-'+file.originalname)
+  }
+})
+var upload = multer({ storage: storage })
+
 let bot_options  = {
   agent: null,
   webhookReply: true
@@ -17,6 +28,7 @@ const port       = process.env.PORT || 80;
 
 app.use(history())
 app.use(cors());
+app.use('/avatars', express.static('avatars'));
 app.use('/images', express.static('public'));
 app.use('/', express.static('build'));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -140,7 +152,33 @@ app.post('/api/update/questions', async (req, res) => {
     res.status(500).send('Damn man, smth goes wrong') 
     throw err;
   }
-}); 
+});
+
+app.post('/api/upload/avatar', upload.single('avatar'), async (req, res) => {
+  try {
+    if(req.headers['token']){
+      let token   = req.headers['token'];
+      let decoded = await jwt.decode(token,'secret');
+      if(!req.file) {
+        res.send('Nothing changed')
+        return;
+      };
+      let form = JSON.parse(req.body.form);
+      form.employees[form.index].img = req.file.filename;
+      let edited  = await clients.updateOne({_id: ObjectId(decoded._id)}, {
+        $set: {
+          employees: form.employees
+        }
+      });
+      res.send({edited: edited, filename: req.file.filename});
+    } else {
+      res.status(403).send('Permission forbidden') 
+    }
+  } catch (err) {
+    res.status(500).send('Damn man, smth goes wrong') 
+    throw err;
+  }
+});
 
 app.post('/api/post/answers', async (req, res) => {
   try {
