@@ -1,21 +1,40 @@
 import React from 'react';
 import axios from 'axios';
-
+import Modal from 'react-modal';
+import Employee from './employee.js';
+import '../assets/admin.css'
 export default class Admin  extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       client: {},
       questions: [],
+      employees: [],
+      eindex: null,
+      employeeForm:{
+        name: '',
+        img: '',
+        role: '',
+      },
+      modalIsOpen: false,
       token: localStorage.getItem('token'),
       types: ['yes-no', 'comment', 'smile', 'num_smile', 'like'],
     };
   }
   
   componentDidMount() {
-    this.getClient()    
+    this.getClient();
   }
   
+  openModal = (index) => {
+    this.setState({eindex: index})
+    this.setState({modalIsOpen: true});
+  }
+
+  closeModal = () => {
+    this.setState({modalIsOpen: false});
+  }
+ 
   addQuestion = () => {
     let questions = this.state.questions;
     questions.push({
@@ -34,7 +53,13 @@ export default class Admin  extends React.Component {
       res.data.questions.forEach(item => {
         if(!item.reasons) item.reasons = [];
       });
-      this.setState({questions: res.data.questions, client: res.data });
+      console.log(res.data);
+      if(!res.data.employees) res.data.employees = []; 
+      this.setState({
+        questions: res.data.questions,
+        client: res.data,
+        employees: res.data.employees,
+      });
     } catch (err) {
       throw err;
     }
@@ -44,6 +69,11 @@ export default class Admin  extends React.Component {
     let questions = this.state.questions;
     questions.splice(index,1);
     this.setState({questions: questions})
+  }
+  deleteEmployee = (index) => {
+    let employees = this.state.employees;
+    employees.splice(index,1);
+    this.setState({employees: employees})
   }
 
   addReason = (index) => {
@@ -59,12 +89,22 @@ export default class Admin  extends React.Component {
     })
   }
   
-  saveUser = async (questions) => {
+  addEmployee = () => {
+    let employees = this.state.employees;
+    employees.push(this.state.employeeForm);
+    this.setState({
+      employees: employees,
+    });
+  }
+  
+  saveUser = async (questions, employees) => {
     try {
       this.setState({questions: questions});
+      this.setState({employees: employees});
       let res = await axios.post('/api/update/questions/', {
         ...this.state.client,
-        questions: this.state.questions
+        questions: this.state.questions,
+        employees: this.state.employees
       },{
         headers: {
           token: this.state.token,
@@ -84,12 +124,13 @@ export default class Admin  extends React.Component {
 
   render(){
     let questions = this.state.questions
+    let employees = this.state.employees
     return (
       <div className="questionblock">
-          {
+        {
           questions.map((q, index) => { return (
               <div key={index}>
-                <input placeholder="Text" value={q.text} onChange={(e) => {questions[index].text      = e.target.value;this.saveState(questions) }} ></input>
+                <input placeholder="Text" value={q.text} onChange={(e) => {questions[index].text = e.target.value;this.saveState(questions) }} ></input>
                 <input placeholder="Bot text" value={q.bot_text} onChange={(e) => {questions[index].bot_text  = e.target.value;this.saveState(questions) }} ></input>
                 <select placeholder="type" name="type" defaultValue={q.type} onChange={(e) => {questions[index].type  = e.target.value;this.saveState(questions) }} >
                   {
@@ -122,9 +163,36 @@ export default class Admin  extends React.Component {
                 }
               </div>
           )})
-          }
-          <button onClick={() => {this.addQuestion()}}>Add a question</button>
-          <button onClick={() => {this.saveUser(questions)}}>Save it!</button>
+        }
+        <button onClick={() => {this.addQuestion()}}>Add a question</button>
+        {employees.length > 0 &&
+          <h2>Employees</h2> && 
+          employees.map((employee, i) => { return (
+            <div key={i}>
+                <div>
+                  <input value={employee.name} onChange={(e)=> {employees[i].name = e.target.value;this.setState({employees:employees})}} />
+                  <br/>
+                  <input value={employee.role} onChange={(e)=> {employee.role = e.target.value;this.setState({employees:employees})}}/>
+                </div>
+              <img key={'ava'+i} src={'http://localhost/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
+              <button onClick={()=> {this.openModal(i)}}>Edit photo</button>
+              <button onClick={()=> {this.deleteEmployee(i)}}>Delete</button>
+            </div>
+          )})
+        }
+        <Modal isOpen={this.state.modalIsOpen}
+          ariaHideApp={false}
+        >
+          <Employee 
+            eindex={this.state.eindex}
+            employees={employees}
+            onRequestClose={this.closeModal}
+          />
+        </Modal>
+        <button onClick={() => {this.addEmployee()}}>Add an employee</button>
+
+        <button onClick={() => {this.saveUser(questions, employees)}}>Save it!</button>
+
       </div>
     )
   }
