@@ -17,9 +17,8 @@ html{
 }
 
 .questiontext{
-    padding-top: 3%;
     font-size: 5rem;
-    height: 200px;
+    height: 190px;
     overflow: hidden;
 }
 
