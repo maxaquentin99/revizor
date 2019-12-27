@@ -24,7 +24,7 @@ let bot_options  = {
 let   bot        = new Telegram(tg_token, bot_options);
 const DB         = require('./data');
 const app        = express();
-const port       = process.env.PORT || 80;
+const port       = process.env.PORT || 5000;
 
 app.use(history())
 app.use(cors());
