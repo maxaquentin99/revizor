@@ -206,10 +206,10 @@ app.post('/api/post/answers', async (req, res) => {
           text = text + `Поздравляем!✅ Вашему заведению поставилики Like\n`;
         } else {
           text = text + `Внимание!❌ Вашему заведению поставили Dislike\n Причина: \n`;
-          // disable no-loop-func
           for (let i = 0; i < reasons.length; i++) {
             if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
           }
+          if(req.body.answers[i].employee) text = text + `Сотудник - ${req.body.answers[i].employee}`
         }
       }
       else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
