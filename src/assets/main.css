@@ -4,6 +4,13 @@ html{
     text-align: center;
 }
 
+.MuiFab-root{
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    margin: 20px !important;
+}
+
 .questionblock{
     height: 800px;
     overflow-wrap: break-word;

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import Fab from '@material-ui/core/Fab';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import '../assets/main.css';    
@@ -92,6 +94,10 @@ class Main extends Component {
         }, 1500)
     };
 
+    refresh(){
+        window.location.href = "/";
+    }
+
     render() {   
 
         if (!this.state.loggedIn) {
@@ -119,6 +125,10 @@ class Main extends Component {
         return (
             
             <div className="main">
+
+            <Fab onClick={() => this.refresh()} >
+            <AutorenewIcon />
+            </Fab>
 
             <div className="progress-container" style={progressContainerStyle}>
             <div className="progress-bar" style={progressBarStyle} />
