@@ -10,14 +10,30 @@ export class LikeQuestion extends React.Component {
             ],
             answer: 'Like',
             reason: null,
-            chosen_reasons: []
+            chosen_reasons: [],
+            employees: [],
+            employeesListShow: false
         }
     }
     setReason(index) {
         let creasons = this.state.chosen_reasons;
         if(!creasons[index]) creasons[index] = this.props.reasons[index]
         else creasons[index] = null;
+        console.log(creasons);
         this.setState({chosen_reasons: creasons});
+    }
+    checkEmployees() {
+        let employeesListShow = false;
+        this.state.chosen_reasons.forEach(item => { 
+            if(item && item.eCheck) employeesListShow = true;
+        })
+        this.setState({employeesListShow: employeesListShow});
+        if(!employeesListShow){ 
+            this.props.save({
+                reasons: this.state.chosen_reasons,
+                answer: this.state.answer
+            }, this.props.last, this.props.index)
+        }
     }
     render(){
         let length = () =>{
@@ -51,7 +67,7 @@ export class LikeQuestion extends React.Component {
                     </div>
                 }
                 {
-                    this.state.answer === 'Dislike' && 
+                    !this.state.employeesListShow && this.state.answer === 'Dislike' && 
                     <div>
                         <div className="questiontext">Что вам не понравилось?</div>
                         <hr className="hr"></hr>
@@ -70,14 +86,34 @@ export class LikeQuestion extends React.Component {
                             {
                                 length() > 0 &&
                                 <a  className="ok-button" onClick={() => {
-                                        this.props.save({
-                                            reasons: this.state.chosen_reasons,
-                                            answer: this.state.answer
-                                        }, this.props.last, this.props.index)}}
+                                        this.checkEmployees()}}
                                     href={nextLink}
                                 >OK
                                 </a>
-                            }
+                            }   
+                        </div>
+                    </div>
+                }
+                {
+                    this.state.employeesListShow && 
+                    <div className='employee-container'>
+                        <div className="employee-question">
+                            {this.props.employees.map((employee, i) => {
+                                return (
+                                    <span
+                                        key={i}
+                                        onClick={() => {
+                                            this.props.save({
+                                                reasons: this.state.chosen_reasons,
+                                                answer: this.state.answer,
+                                                employee: employee.name
+                                            }, this.props.last, this.props.index);
+                                        }}
+                                    >
+                                        <img src={'/avatars/'+employee.img} className="employee-ava inline-photo" alt={employee.name}/>
+                                    </span>
+                                )
+                            })}
                         </div>
                     </div>
                 }

@@ -4,3 +4,8 @@ body {
 .employee-ava {
     width: 50px;
 }
+
+.inline-photo {
+    margin: 20px;
+    width: 100px;
+}

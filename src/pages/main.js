@@ -15,7 +15,8 @@ class Main extends Component {
             scrolled: 0,
             loggedIn: true,
             client: {
-                questions: []
+                questions: [],
+                employees: []
             },
         }
     }
@@ -168,7 +169,8 @@ class Main extends Component {
                                     key={index}
                                     index={index}
                                     question={questions[index]} 
-                                    reasons={questions[index].reasons} 
+                                    reasons={questions[index].reasons}
+                                    employees={this.state.client.employees}
                                     />
                             )
                         }
