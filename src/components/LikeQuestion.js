@@ -98,6 +98,7 @@ export class LikeQuestion extends React.Component {
                     this.state.employeesListShow && 
                     <div className='employee-container'>
                         <div className="employee-question">
+                            <h1>Кто вас сегодня обслуживал?</h1>
                             {this.props.employees.map((employee, i) => {
                                 return (
                                     <span
