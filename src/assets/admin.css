@@ -7,9 +7,9 @@ body {
 
 .inline-photo {
     margin: 20px;
-    width: 100px;
+    width: 150px;
 }
-.MuiFormLabel-root{
+.MuiFormLabel-root {
     font-size: 1rem !important
 }
 
