@@ -4,6 +4,10 @@ html{
     text-align: center;
 }
 
+body{
+    overflow: hidden;
+}
+
 .MuiFab-root{
     position: fixed !important;
     top: 0 !important;
@@ -32,7 +36,6 @@ html{
     margin-top: 5%;
     margin-left: 0.5%;
     margin-right: 0.5%;
-    animation-duration: 1.75s;
 }
 
 .questionimagestwo{
