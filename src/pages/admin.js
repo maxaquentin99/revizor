@@ -107,7 +107,7 @@ export default class Admin  extends React.Component {
     try {
       this.setState({questions: questions});
       this.setState({employees: employees});
-      let res = await axios.post('/api/update/questions/', {
+      let res = await axios.post('http://revizor.space/api/update/questions/', {
         ...this.state.client,
         questions: this.state.questions,
         employees: this.state.employees
@@ -254,7 +254,7 @@ export default class Admin  extends React.Component {
             <div key={i}>
               <Grid container spacing={3} alignItems="flex-end" justify="center">
               <Grid item>
-              <img key={'ava'+i} src={'/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
+              <img key={'ava'+i} src={'http://revizor.space/avatars/'+employee.img} alt={employee.name} className="employee-ava" />
               </Grid>
               <Grid item>
               <TextField

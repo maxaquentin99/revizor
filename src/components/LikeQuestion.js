@@ -111,7 +111,7 @@ export class LikeQuestion extends React.Component {
                                             }, this.props.last, this.props.index);
                                         }}
                                     >
-                                        <img src={'/avatars/'+employee.img} className="employee-ava inline-photo" alt={employee.name}/>
+                                        <img src={'http://revizor.space/avatars/'+employee.img} className="employee-ava inline-photo" alt={employee.name}/>
                                     </span>
                                 )
                             })}
