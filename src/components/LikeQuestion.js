@@ -1,4 +1,6 @@
 import React from 'react';
+import EmployeeList  from './EmployeeList';
+import Reasons  from './Reasons';
 
 export class LikeQuestion extends React.Component {
     constructor(props) {
@@ -16,19 +18,22 @@ export class LikeQuestion extends React.Component {
         }
     }
     setReason(index) {
+        console.log(this.state);
         let creasons = this.state.chosen_reasons;
         if(!creasons[index]) creasons[index] = this.props.reasons[index]
         else creasons[index] = null;
         console.log(creasons);
         this.setState({chosen_reasons: creasons});
     }
-    checkEmployees() {
+    checkEmployees(nextLink) {
         let employeesListShow = false;
         this.state.chosen_reasons.forEach(item => { 
             if(item && item.eCheck) employeesListShow = true;
         })
         this.setState({employeesListShow: employeesListShow});
         if(!employeesListShow){ 
+            console.log('YEAP');
+            window.location.hash = nextLink;
             this.props.save({
                 reasons: this.state.chosen_reasons,
                 answer: this.state.answer
@@ -68,55 +73,25 @@ export class LikeQuestion extends React.Component {
                 }
                 {
                     !this.state.employeesListShow && this.state.answer === 'Dislike' && 
-                    <div>
-                        <div className="questiontext">Что вам не понравилось?</div>
-                        <hr className="hr"></hr>
-                        {
-                            this.props.reasons.map((r, index) => {
-                                let class_name = 'reason';
-                                if(this.state.chosen_reasons[index]) class_name += ' selected_reason' 
-                                return (
-                                    <div className={class_name} onClick={() => {this.setReason(index)}} key={index} >
-                                        {r.text}
-                                    </div>
-                                )
-                            })
-                        }
-                        <div className="btn-container">
-                            {
-                                length() > 0 &&
-                                <a  className="ok-button" onClick={() => {
-                                        this.checkEmployees()}}
-                                    href={nextLink}
-                                >OK
-                                </a>
-                            }   
-                        </div>
-                    </div>
+                    <Reasons
+                        length = {length}
+                        reasons = {this.props.reasons}
+                        nextLink = {nextLink}
+                        chosen_reasons = {this.state.chosen_reasons}
+                        setReason={this.setReason.bind(this)}
+                        checkEmployees = {this.checkEmployees.bind(this)}
+                    />
                 }
                 {
-                    this.state.employeesListShow && 
-                    <div className='employee-container'>
-                        <div className="employee-question">
-                            <h1>Кто вас сегодня обслуживал?</h1>
-                            {this.props.employees.map((employee, i) => {
-                                return (
-                                    <span
-                                        key={i}
-                                        onClick={() => {
-                                            this.props.save({
-                                                reasons: this.state.chosen_reasons,
-                                                answer: this.state.answer,
-                                                employee: employee.name
-                                            }, this.props.last, this.props.index);
-                                        }}
-                                    >
-                                        <img src={'http://revizor.space/avatars/'+employee.img} className="employee-ava inline-photo" alt={employee.name}/>
-                                    </span>
-                                )
-                            })}
-                        </div>
-                    </div>
+                    this.state.employeesListShow &&
+                    <EmployeeList
+                        save={this.props.save}
+                        employees={this.props.employees}
+                        last={this.props.last}
+                        index={this.props.index}
+                        reasons={this.state.chosen_reasons}
+                        answer= {this.state.answer}
+                    />
                 }
             </div>
          )
