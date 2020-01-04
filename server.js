@@ -204,12 +204,18 @@ app.post('/api/post/answers', async (req, res) => {
         let reasons = req.body.answers[i].reasons
         if(answer === 'Like'){
           text = text + `Поздравляем!✅ Вашему заведению поставилики Like\n`;
-        } else {
+        } else if(answer === 'Dislike') {
           text = text + `Внимание!❌ Вашему заведению поставили Dislike\n Причина: \n`;
           for (let i = 0; i < reasons.length; i++) {
             if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
           }
-          if(req.body.answers[i].employee) text = text + `Сотудник - ${req.body.answers[i].employee}`
+          if(req.body.answers[i].employee) text = text + `Сотрудник - ${req.body.answers[i].employee}`
+        } else {
+          text = text + `❌ Вашему заведению поставили ${answer}\n Причины: \n`;
+          for (let i = 0; i < reasons.length; i++) {
+            if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
+          }
+          if(req.body.answers[i].employee) text = text + `Сотрудник - ${req.body.answers[i].employee}\n`
         }
       }
       else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
