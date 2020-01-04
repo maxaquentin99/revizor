@@ -182,7 +182,7 @@ export default class Admin  extends React.Component {
                 </Select>
                 </Grid>
                 <Grid item>
-                {q.type === 'like' &&
+                {(q.type === 'like' || q.type === 'num_smile' || q.type === 'smile') &&
                 <Button variant="outlined" color="primary" onClick={() => {this.addReason(index)}}> Add a Reason </Button>
                 }
                 </Grid>

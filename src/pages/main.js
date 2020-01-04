@@ -145,6 +145,8 @@ class Main extends Component {
                                     key={index} 
                                     index={index} 
                                     question={questions[index]} 
+                                    reasons={questions[index].reasons}
+                                    employees={this.state.client.employees}
                                     />)
                         } else if(q.type === 'yes-no'){
                             return <YesNoQuestion 
@@ -170,6 +172,8 @@ class Main extends Component {
                                     key={index}
                                     index={index}
                                     question={questions[index]} 
+                                    reasons={questions[index].reasons}
+                                    employees={this.state.client.employees}
                                     />)
                         } else if(q.type === 'like') {
                             return (
