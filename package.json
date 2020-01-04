@@ -24,6 +24,7 @@
     "react-modal": "^3.11.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
+    "scoped-style": "^1.4.0",
     "sweetalert2": "^9.5.2",
     "telegraf": "^3.33.3",
     "telegraf-flow": "^8.3.0",
