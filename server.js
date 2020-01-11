@@ -193,7 +193,7 @@ app.post('/api/post/answers', async (req, res) => {
       client: decoded._id,
       client_name: decoded.username,
       answers: req.body.answers,
-      time: Date().getTime()
+      time: new Date().getTime()
     });
     let text = '';
     console.log(req.body)
