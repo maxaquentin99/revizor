@@ -130,9 +130,9 @@ class Main extends Component {
             <AutorenewIcon />
             </Fab>
 
-            <div className="progress-container" style={progressContainerStyle}>
+            {/* <div className="progress-container" style={progressContainerStyle}>
             <div className="progress-bar" style={progressBarStyle} />
-            </div>
+            </div> */}
 
                 {
                     questions.map((q, index) => {
