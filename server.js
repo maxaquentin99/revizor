@@ -187,8 +187,8 @@ app.post('/api/post/answers', async (req, res) => {
 
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
-    let recievers = await bot_users.find({ $or: [{client_ids: client._id}, {client_id: client._id}] }).toArray();
-
+    let recievers = await bot_users.find({ $or: [{clients: client._id}, {client_id: client._id}] }).toArray();
+      console.log(recievers);
     let result    = await answers.insertOne({
       client: decoded._id,
       client_name: decoded.username,
@@ -196,7 +196,6 @@ app.post('/api/post/answers', async (req, res) => {
       time: new Date().getTime()
     });
     let text = '';
-    console.log(req.body)
     for(let i=0;i<req.body.answers.length;i++){
       let answer = req.body.answers[i];
       if(typeof req.body.answers[i] === 'object') {
@@ -221,7 +220,7 @@ app.post('/api/post/answers', async (req, res) => {
       else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
     }
     for(let i=0;i<recievers.length;i++){
-      bot.sendMessage(recievers[i].chat_id, text)
+      bot.sendMessage(recievers[i].chat_id, client.brandname+'\n\n'+text)
     }
     res.send(result);
       }
