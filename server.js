@@ -187,7 +187,7 @@ app.post('/api/post/answers', async (req, res) => {
 
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
-    let recievers = await bot_users.find({client_id: client._id}).toArray();
+    let recievers = await bot_users.find({ $or: [{client_ids: client._id}, {client_id: client._id}] }).toArray();
 
     let result    = await answers.insertOne({
       client: decoded._id,

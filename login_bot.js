@@ -27,10 +27,12 @@ const login            = new Scene('login');
 const password         = new Scene('password');
 const start            = new Scene('start');
 
-
+bot.command('login', (ctx) => {
+    ctx.flow.enter('login')
+})
 login.enter(ctx => {
     try { 
-        ctx.reply('Введите свой логин: ')
+        ctx.reply('Введите логин заведения: ')
     } catch (err){
         throw err;
     }
@@ -39,7 +41,7 @@ login.enter(ctx => {
 login.on('message', async ctx => {
     try {
         let client = await users.findOne({username: ctx.message.text});
-        console.log(client)
+        console.log(client);
         if(client) {
             ctx.session.state = { user : client };
             ctx.flow.enter('password');
@@ -67,9 +69,13 @@ password.on('message', async (ctx) => {
         let user = ctx.session.state.user;
         let msg  = ctx.message.text;
         if(user.password === msg) {
+            let b_user = await bot_users.findOne({chat_id: ctx.from.id});
+            if(!b_user.client_ids) bot_users.client_ids = [];
+            b_user.client_ids.push(user._id);
             let inserted = await bot_users.updateOne({chat_id: ctx.from.id}, {
                 $set: {
                     logged_in: true,
+                    clients: b_user.client_ids,
                     client_id: user._id,
                     chat_id: ctx.from.id,
                 }
