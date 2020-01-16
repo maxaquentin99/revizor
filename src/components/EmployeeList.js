@@ -7,7 +7,6 @@ export default class EmployeeList extends React.Component {
         }
     }
     goToNext = (e) => {
-        console.log(e)
         if(!this.props.last) {
             window.location.href = this.props.nextLink
         }
