@@ -10,7 +10,6 @@ let bot = new Telegram(tg_token, bot_options);
 
 let sendDailyData = async () => {
     try {
-
         let connection = await new mongo();
         let dbase     = await connection.db('revizor');
         let clients     = dbase.collection('clients');
@@ -21,16 +20,18 @@ let sendDailyData = async () => {
         console.log(all_users);
         let recievers = await bot_users.find({client_id: all_users._id}).toArray();
         
-        let sd   = new Date(new Date().setHours(0,0,0,0));
-        let start_day = new Date("2015-03-25T12:00:00-06:00").toString();
-        let d   = new Date(new Date().setHours(0,0,0,0)).getDate();
-        console.log(start_day);
+        let start_day   = new Date().setHours(0,0,0,0)
+        start_day = start_day + 24*60*60*1000;
+        
+        console.log(new Date(start_day));
         let end_day     = new Date().setHours(23,59,59,9999);
-        let day_answers = await answers.find({ $and: [
-            {client: all_users._id},
-            {time: {$gte: start_day}},
-            {time: {$lte: end_day}},
-        ]}).toArray();
+        start_day = start_day + 24*60*60*1000;
+        // let day_answers = await answers.find({ $and: [
+        //     // {client: all_users._id},
+        //     {time: {$gte: start_day}},
+        //     {time: {$lte: end_day}},
+        // ]}).toArray();
+        let day_answers = await answers.find({client: all_users._id}).toArray()
         
         let l = day_answers.length;
         
@@ -76,4 +77,4 @@ let sendDailyData = async () => {
 // - Персонал грубый
 // - долго ждали заказ
 sendDailyData()
-// cron.schedule('* * * * *', sendDailyData);
+cron.schedule('10 * * * *', sendDailyData);
