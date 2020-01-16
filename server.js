@@ -220,7 +220,7 @@ app.post('/api/post/answers', async (req, res) => {
       else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
     }
     for(let i=0;i<recievers.length;i++){
-      bot.sendMessage(recievers[i].chat_id, client.brandname+'\n\n'+text)
+      bot.sendMessage(recievers[i].chat_id, client.username+'\n\n'+text)
     }
     res.send(result);
       }
