@@ -133,12 +133,20 @@ export default class Admin  extends React.Component {
     let employees = this.state.employees
     return (
       <div className="questionblock">
-
+        Camera
+        <Switch
+          checked={this.state.client.camera === true}
+          onChange={(e) => {this.state.client.camera = !this.state.client.camera; this.saveState(questions) }}
+          value={true}
+          color="primary"
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
+        <br />
+        
         <Button variant="outlined" color="primary" onClick={() => {this.addQuestion()}}> Add a Question </Button>
         <br></br>
         <br></br>
         <br></br>
-        
         {
           questions.map((q, index) => { return (
               <div key={index}>
