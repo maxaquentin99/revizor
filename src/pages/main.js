@@ -9,7 +9,7 @@ import { SmileQuestion } from '../components/SmileQuestion'
 import { YesNoQuestion } from '../components/YesNoQuestion'
 import { CommentQuestion } from '../components/CommentQuestion'
 import { LikeQuestion } from '../components/LikeQuestion'
-
+import Camera from '../components/hiddenCamera.js'
 class Main extends Component {
     constructor(){
         super();
@@ -18,7 +18,7 @@ class Main extends Component {
             loggedIn: true,
             client: {
                 questions: [],
-                employees: []
+                employees: [],
             },
         }
     }
@@ -34,14 +34,14 @@ class Main extends Component {
     }
 
     scrollProgress = () => {
-    const scrollPx = document.documentElement.scrollTop;
-    const winHeightPx =
-    document.documentElement.scrollHeight -
-    document.documentElement.clientHeight;
-    const scrolled = `${scrollPx / winHeightPx * 100}%`;
-    this.setState({
-    scrolled: scrolled
-    });
+        const scrollPx = document.documentElement.scrollTop;
+        const winHeightPx =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+        const scrolled = `${scrollPx / winHeightPx * 100}%`;
+        this.setState({
+            scrolled: scrolled
+        });
     };
 
     getquestions  = async () => {
@@ -55,22 +55,42 @@ class Main extends Component {
         }
     };
     
+    takepicture = async () => {
+        let canvas  = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        let video = document.getElementById('video');
+        context.drawImage(video, 0, 0, 400, 450);
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                resolve(blob)
+            },'image/jpeg',0.8)
+        })
+    }
+
     saveAnswer  = (value, last, index) => {
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
         if(!answers) answers = []
         answers[index] = value;
         localStorage.setItem('revizor_answers', JSON.stringify(answers));
-        console.log(answers);
-        if(last) this.send()
+        if(last) this.send();
     };
 
-    send  = () => {
+    send  = async () => {
+        let formData = new FormData();
+        let pic = null
+        if(this.state.client.camera){
+            pic = await this.takepicture();
+            formData.append('picture', pic, 'camera-pic.png');
+        }
         let answers = JSON.parse(localStorage.getItem('revizor_answers'));
-        axios.post('/api/post/answers', {
+        let form = {
+            answers: answers,
             questions: this.state.client.questions,
-            answers: answers
-        }, {
+        }
+        formData.append('form', JSON.stringify(form));
+        axios.post('/api/post/answers', formData, {
             headers: {
+                'Content-Type': `multipart/form-data`,
                 'token': localStorage.getItem('token')
             }
         }).then((res) => {
@@ -86,12 +106,12 @@ class Main extends Component {
             icon: 'success',
             title: 'Спасибо за отзыв!',
             showConfirmButton: false,
-            timer: 3500
-          })
+            timer: 15000
+        })
 
         window.setTimeout(function () {
             window.location.href = "/";
-        }, 1500)
+        }, 15000)
     };
 
     refresh(){
@@ -191,7 +211,7 @@ class Main extends Component {
                         return null;
                     })
                 }
-
+                <Camera></Camera>
                 </div>
 
             )
