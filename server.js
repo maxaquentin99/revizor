@@ -180,27 +180,32 @@ app.post('/api/upload/avatar', upload.single('avatar'), async (req, res) => {
   }
 });
 
-app.post('/api/post/answers', async (req, res) => {
+
+
+app.post('/api/post/answers', upload.single('picture'), async (req, res) => {
   try {
     if(req.headers['token']){
+    let form = JSON.parse(req.body.form);
     let token     = req.headers.token;
-
     let decoded   = await jwt.verify(token,'secret');
     let client    = await clients.findOne({_id: ObjectId(decoded._id)})
     let recievers = await bot_users.find({ $or: [{clients: client._id}, {client_id: client._id}] }).toArray();
-      console.log(recievers);
+    let pic  = null;
+    if(req.file) pic = req.file.filename;
     let result    = await answers.insertOne({
       client: decoded._id,
       client_name: decoded.username,
-      answers: req.body.answers,
-      time: new Date().getTime()
+      answers: form.answers,
+      time: new Date().getTime(),
+      picture: pic,
     });
+    console.log(pic)
     let text = '';
-    for(let i=0;i<req.body.answers.length;i++){
-      let answer = req.body.answers[i];
-      if(typeof req.body.answers[i] === 'object') {
-        answer = req.body.answers[i].answer
-        let reasons = req.body.answers[i].reasons
+    for(let i=0;i<form.answers.length;i++){
+      let answer = form.answers[i];
+      if(typeof form.answers[i] === 'object') {
+        answer = form.answers[i].answer
+        let reasons = form.answers[i].reasons
         if(answer === 'Like'){
           text = text + `Поздравляем!✅ Вашему заведению поставилики Like\n`;
         } else if(answer === 'Dislike') {
@@ -208,19 +213,22 @@ app.post('/api/post/answers', async (req, res) => {
           for (let i = 0; i < reasons.length; i++) {
             if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
           }
-          if(req.body.answers[i].employee) text = text + `Сотрудник - ${req.body.answers[i].employee}`
+          if(form.answers[i].employee) text = text + `Сотрудник - ${form.answers[i].employee}`
         } else {
           text = text + `❌ Вашему заведению поставили ${answer}\n Причины: \n`;
           for (let i = 0; i < reasons.length; i++) {
             if(reasons[i]) text = text + ` - ${reasons[i].text}\n`
           }
-          if(req.body.answers[i].employee) text = text + `Сотрудник - ${req.body.answers[i].employee}\n`
+          if(form.answers[i].employee) text = text + `Сотрудник - ${form.answers[i].employee}\n`
         }
       }
-      else text = text+`${req.body.questions[i].bot_text} - ${answer}\n`;
+      else text = text+`${form.questions[i].bot_text} - ${answer}\n`;
     }
     for(let i=0;i<recievers.length;i++){
       bot.sendMessage(recievers[i].chat_id, client.username+'\n\n'+text)
+      if(client.camera){
+        bot.sendPhoto(recievers[i].chat_id,'http://revizor.space/avatars/'+req.file.filename);
+      }
     }
     res.send(result);
       }

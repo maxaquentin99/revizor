@@ -113,3 +113,7 @@ body{
     padding-top: 13%;
     height: 100%;
 }
+
+.none { 
+    display: none;
+}
