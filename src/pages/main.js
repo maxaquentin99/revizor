@@ -211,7 +211,10 @@ class Main extends Component {
                         return null;
                     })
                 }
-                <Camera></Camera>
+                {
+                this.state.client.camera && 
+                    <Camera></Camera>
+                }
                 </div>
 
             )
