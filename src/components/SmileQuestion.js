@@ -98,6 +98,7 @@ export class SmileQuestion extends React.Component {
             {
                 !this.state.employeesListShow && this.state.answer &&
                 <Reasons
+                    title = {this.props.question.reasonTitle}
                     length = {length}
                     reasons = {this.props.reasons}
                     nextLink = {nextLink}

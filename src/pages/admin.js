@@ -147,8 +147,10 @@ export default class Admin  extends React.Component {
         <br></br>
         <br></br>
         <br></br>
+
         {
           questions.map((q, index) => { return (
+
               <div key={index}>
 
                 <Grid container spacing={3} alignItems="flex-end" justify="center">
@@ -189,6 +191,17 @@ export default class Admin  extends React.Component {
                 }
                 </Select>
                 </Grid>
+                {(q.type === 'like' || q.type === 'num_smile' || q.type === 'smile') && <Grid item>
+                  <TextField
+                  label="Reason Title"
+                  multiline
+                  value={q.reasonTitle}
+                  onChange={(e) => {questions[index].reasonTitle = e.target.value;this.saveState(questions) }}
+                  variant="outlined"
+                  id="questiontext"
+                  />
+                </Grid>
+                }
                 <Grid item>
                 {(q.type === 'like' || q.type === 'num_smile' || q.type === 'smile') &&
                 <Button variant="outlined" color="primary" onClick={() => {this.addReason(index)}}> Add a Reason </Button>

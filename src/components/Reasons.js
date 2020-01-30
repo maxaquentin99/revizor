@@ -8,9 +8,11 @@ export default class Reasons extends React.Component {
     }
 
     render() {
+        let title = 'Что вам не понравилось?'
+        if(this.props.title) title = this.props.title
         return (
             <div>
-                <div className="questiontext">Что вам не понравилось?</div>
+                <div className="questiontext">{title}</div>
                 <hr className="hr"></hr>
                 {
                     this.props.reasons.map((r, index) => {
