@@ -19,17 +19,18 @@ bot.use(async (ctx, next) => {
     bot_users = await dbase.collection('bot-users');
     next();
 })
-bot.use(session())
-bot.use(flow.middleware())
+bot.use(session());
+bot.use(flow.middleware());
 
 // Scenes initiation
 const login            = new Scene('login');
 const password         = new Scene('password');
 const start            = new Scene('start');
 
-bot.command('login', (ctx) => {
-    ctx.flow.enter('login')
-})
+bot.command('login', (ctx) => {ctx.flow.enter('login')})
+login.command('login', (ctx) => {ctx.flow.enter('login')})
+password.command('login', (ctx) => {ctx.flow.enter('login')})
+
 login.enter(ctx => {
     try { 
         ctx.reply('Введите логин заведения: ')
