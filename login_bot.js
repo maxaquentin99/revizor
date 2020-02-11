@@ -70,7 +70,7 @@ password.on('message', async (ctx) => {
         let user = ctx.session.state.user;
         let msg  = ctx.message.text;
         if(user.password === msg) {
-            let b_user = await bot_users.findOne({chat_id: ctx.from.id});
+            let b_user = await users.findOne({chat_id: ctx.from.id});
             if(!b_user.clients) b_user.clients = [];
             b_user.clients.push(user._id);
             let inserted = await bot_users.updateOne({chat_id: ctx.from.id}, {
