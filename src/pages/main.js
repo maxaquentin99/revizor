@@ -106,12 +106,12 @@ class Main extends Component {
             icon: 'success',
             title: 'Спасибо за отзыв!',
             showConfirmButton: false,
-            timer: 15000
+            timer: 3000
         })
 
         window.setTimeout(function () {
             window.location.href = "/";
-        }, 15000)
+        }, 3000)
     };
 
     refresh(){

@@ -23,6 +23,7 @@ class LogIn extends Component {
             })
             localStorage.setItem('token', resdata.data.token)
             this.setState({loggedIn: true})
+            console.log(resdata)
             }catch(err){
             alert("Error!");
             throw err
